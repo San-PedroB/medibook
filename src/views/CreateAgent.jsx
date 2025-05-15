@@ -2,7 +2,7 @@
 import { auth } from "../firebase/firebaseConfig";
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { registerAgent } from "../services/firebaseService";
+import { registerAgent } from "../services/userService";
 
 // Microcomponentes
 import NameInput from "../components/formElements/NameInput";

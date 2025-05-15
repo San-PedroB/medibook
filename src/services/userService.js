@@ -63,7 +63,7 @@ export async function deleteAgentById(agentId) {
     await deleteDoc(doc(db, "users", agentId));
     return { success: true };
   } catch (error) {
-    console.error("❌ Error al eliminar agente desde firebaseService:", error);
+    console.error("❌ Error al eliminar agente desde userService:", error);
     throw error;
   }
 }
@@ -83,7 +83,7 @@ export async function getAgentsByCompanyId(companyId) {
       ...doc.data(),
     }));
   } catch (error) {
-    console.error("❌ Error al obtener agentes desde firebaseService:", error);
+    console.error("❌ Error al obtener agentes desde userService:", error);
     throw error;
   }
 }

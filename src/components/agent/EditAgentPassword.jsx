@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebase/firebaseConfig";
-import { updateAgentPassword } from "../../services/firebaseService";
+import { updateAgentPassword } from "../../services/userService";
 import ErrorMessage from "../formElements/ErrorMessage";
 import SubmitButton from "../formElements/SubmitButton";
 import { triggerAnimation } from "../../utils/animationUtils";

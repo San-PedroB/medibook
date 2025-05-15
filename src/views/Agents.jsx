@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import { auth, db } from "../firebase/firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
-import { getAgentsByCompanyId, deleteAgentById } from "../services/firebaseService";
+import { getAgentsByCompanyId, deleteAgentById } from "../services/userService";
 import { useNavigate } from "react-router-dom";
 
 

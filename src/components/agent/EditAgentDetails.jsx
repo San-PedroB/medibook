@@ -4,7 +4,7 @@ import { db } from "../../firebase/firebaseConfig";
 import useFormField from "../../hooks/useFormField";
 import { validateFields } from "../../utils/formUtils";
 import { triggerAnimation } from "../../utils/animationUtils";
-import { updateAgentById } from "../../services/firebaseService";
+import { updateAgentById } from "../../services/userService";
 import { useNavigate } from "react-router-dom";
 
 // Microcomponentes

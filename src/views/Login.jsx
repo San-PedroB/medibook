@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { loginUser } from "../services/firebaseService";
+import { loginUser } from "../services/userService";
 
 // Microcomponentes
 import EmailInput from "../components/formElements/EmailInput";

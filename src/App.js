@@ -10,6 +10,9 @@ import { AuthProvider } from './context/AuthContext';
 import PrivateRoute from './routes/PrivateRoute';
 import Agents from './views/Agents';
 import EditAgent from './views/EditAgent';
+import CreateDoctor from './views/Doctors/CreateDoctor';
+import DoctorList from './views/Doctors/DoctorList'
+import EditDoctor from './views/Doctors/EditDoctor';
 
 
 function App() {
@@ -48,6 +51,27 @@ function App() {
                 element={
                   <PrivateRoute>
                     <EditAgent />
+                  </PrivateRoute>
+                }
+              />
+              <Route path="/doctor-list"
+                element={
+                  <PrivateRoute>
+                    <DoctorList />
+                  </PrivateRoute>
+                }
+              />
+              <Route path="/create-doctor"
+                element={
+                  <PrivateRoute>
+                    <CreateDoctor />
+                  </PrivateRoute>
+                }
+              />
+              <Route path="/edit-doctor/:id"
+                element={
+                  <PrivateRoute>
+                    <EditDoctor></EditDoctor>
                   </PrivateRoute>
                 }
               />
