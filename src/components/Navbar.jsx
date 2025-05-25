@@ -7,7 +7,7 @@ import { useAuth } from "../context/AuthContext";
 
 
 function Navbar() {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const navigate = useNavigate();
   const handleLogout = async () => {
   try {
@@ -29,7 +29,7 @@ function Navbar() {
             {!user && //si el user NO esta logeado se muestra el login y registro
              (<> 
             <li className="nav-item mx-2">
-              <Link className="nav-link" to="/">Login</Link>
+              <Link className="nav-link btn-outline-primary" to="/">Login</Link>
             </li>
             <li className="nav-item mx-2">
               <Link className="nav-link" to="/register">Registro</Link>
