@@ -9,10 +9,13 @@ import CreateAgent from './views/CreateAgent';
 import { AuthProvider } from './context/AuthContext';
 import PrivateRoute from './routes/PrivateRoute';
 import Agents from './views/Agents';
+import Doctors from './views/Doctors';
 import EditAgent from './views/EditAgent';
 import AnimatedBackground from './components/animatedbackground/AnimatedBackground';
 import 'bootstrap/dist/css/bootstrap.min.css'; // importa los estilos CSS
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'; 
+import CreateDoctor from './views/CreateDoctor';
+import DoctorList from './views/Doctors';
 
 
 function App() {
@@ -55,6 +58,20 @@ function App() {
                   </PrivateRoute>
                 }
               />
+              <Route path="/create-doctor"
+                element={
+                  <PrivateRoute>
+                    <CreateDoctor />
+                  </PrivateRoute>
+                }
+                />
+                <Route path="/doctors"
+                element={
+                  <PrivateRoute>
+                    <Doctors />
+                  </PrivateRoute>
+                }
+                />
             </Routes>
           </main>
           <Footer />

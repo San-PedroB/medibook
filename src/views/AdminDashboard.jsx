@@ -60,9 +60,15 @@ useEffect(() => {
               <div className="card-body text-center">
                 <h5 className="card-title">Médicos</h5>
                 <p className="card-text">Registra y edita personal médico.</p>
-                <button className="btn btn-outline-primary" onClick={() => navigate("/doctors")}>
-                  Ver Médicos
-                </button>
+                <div className="d-grid gap-2">
+                  <button
+                    className="btn btn-outline-primary"
+                    onClick={() => navigate("/create-doctor")}>
+                    Crear Médico
+                  </button>
+                  <button className="btn btn-primary" onClick={() => navigate("/doctors")}>
+                  Ver Médicos </button>
+                </div>
               </div>
             </div>
           </div>

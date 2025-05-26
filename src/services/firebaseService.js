@@ -130,3 +130,64 @@ export async function getCurrentUserData() {
 export async function logoutUser() {
   await signOut(auth);
 }
+
+/**
+ * Registrar médico (sin autenticación)
+ */
+export async function registerDoctor({ fullName, email, specialty, phone }) {
+  try {
+    const doctorRef = doc(collection(db, "doctors")); // Genera ID automático
+    await setDoc(doctorRef, {
+      name: fullName,
+      email,
+      specialty,
+      phone,
+      createdAt: serverTimestamp(),
+    });
+
+    return { id: doctorRef.id };
+  } catch (error) {
+    console.error("❌ Error al registrar médico:", error);
+    throw error;
+  }
+}
+
+/**
+ * Obtener todos los médicos
+ */
+export async function getDoctors() {
+  try {
+    const snapshot = await getDocs(query(collection(db, "doctors"), orderBy("createdAt", "desc")));
+    return snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+  } catch (error) {
+    console.error("❌ Error al obtener doctores:", error);
+    throw error;
+  }
+}
+
+/**
+ * Eliminar médico por ID
+ */
+export async function deleteDoctorById(doctorId) {
+  try {
+    await deleteDoc(doc(db, "doctors", doctorId));
+  } catch (error) {
+    console.error("❌ Error al eliminar médico:", error);
+    throw error;
+  }
+}
+
+/**
+ * Actualizar médico por ID
+ */
+export async function updateDoctorById(doctorId, updatedFields) {
+  try {
+    await updateDoc(doc(db, "doctors", doctorId), updatedFields);
+  } catch (error) {
+    console.error("❌ Error al actualizar médico:", error);
+    throw error;
+  }
+}
