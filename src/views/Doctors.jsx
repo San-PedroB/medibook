@@ -44,41 +44,45 @@ function DoctorList() {
     <div className="container mt-5">
       <h2 className="mb-4">Lista de Médicos</h2>
       <table className="table table-striped">
-        <thead>
-          <tr>
-            <th>Nombre</th>
-            <th>Correo</th>
-            <th>Especialidad</th>
-            <th>Teléfono</th>
-            <th>Acciones</th>
-            <th>Fecha de Creación</th>
-            <th>Historial de Citas</th>
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Correo</th>
+          <th>Especialidad</th>
+          <th>Teléfono</th>
+          <th>Fecha de Registro</th> {/* Mueve esto antes de Acciones */}
+          <th>Historial de Citas</th>
+          <th>Acciones</th> {/* Acciones al final */}
+        </tr>
+      </thead>
+      <tbody>
+        {doctors.map((doc) => (
+          <tr key={doc.id}>
+            <td>{doc.name}</td>
+            <td>{doc.email}</td>
+            <td>{doc.specialty}</td>
+            <td>{doc.phone}</td>
+            <td>{doc.createdAt?.toDate().toLocaleString() || "—"}</td>
+            <td>
+              {/* Aquí va el botón o link para historial */}
+            </td>
+            <td>
+              <button
+                className="btn btn-sm btn-outline-primary me-2"
+                onClick={() => navigate(`/edit-doctor/${doc.id}`)}
+              >
+                Editar
+              </button>
+              <button
+                className="btn btn-sm btn-outline-danger"
+                onClick={() => handleDelete(doc.id)}
+              >
+                Eliminar
+              </button>
+            </td>
           </tr>
-        </thead>
-        <tbody>
-          {doctors.map((doc) => (
-            <tr key={doc.id}>
-              <td>{doc.name}</td>
-              <td>{doc.email}</td>
-              <td>{doc.specialty}</td>
-              <td>{doc.phone}</td>
-              <td>
-                <button
-                  className="btn btn-sm btn-outline-primary me-2"
-                  onClick={() => navigate(`/edit-doctor/${doc.id}`)}
-                >
-                  Editar
-                </button>
-                <button
-                  className="btn btn-sm btn-outline-danger"
-                  onClick={() => handleDelete(doc.id)}
-                >
-                  Eliminar
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
+        ))}
+      </tbody>
       </table>
     </div>
   );
