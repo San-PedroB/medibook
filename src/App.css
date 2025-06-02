@@ -37,13 +37,6 @@
   }
 }
 
-/* estilos agregador por daniel  */
-.logo-img {
-  width: 115px;
-  height: 115px;
-  margin-left: -100px;
-
-}
 
 .App {
   text-align: center;
@@ -99,6 +92,95 @@
 /* Color de fondo y texto al pasar el mouse por las opciones del dropdown */
 .dropdown-menu .dropdown-item:hover,
 .dropdown-menu .dropdown-item:focus {
-  background-color: #129ae8; /* color primary bootstrap */
-  color: white !important;   /* texto blanco */
+  background-color: #129ae8; 
+  color: white !important;   
+}
+
+
+/* Estilos para el Documento Respaldo Médico */
+.formulario-pdf {  /*contenedor con fondo blanco, texto negro*/
+  padding: 20px;
+  background-color: #fff;
+  color: #000;
+  max-width: 800px;
+  margin: 0 auto;
+  font-size: 14px;
+}
+
+.center {
+  text-align: center;
+}
+
+.document-container { /* centra el fondo blanca junto con el contenido */
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.document-a4 {  /** Da el tamaño de una hoja A4 en pixeles */
+  width: 794px; /* A4 ancho in pixels */
+  min-height: 1123px; /* A4 largo en pixels*/
+  padding: 40px;
+  background: white;
+  border: 1px solid #ccc;
+  color: #222;
+  line-height: 1.6;
+}
+
+.center {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+ul {
+  margin-left: 20px;
+  padding-left: 0;
+}
+
+ul li {
+  margin-bottom: 6px;
+}
+
+.firma-section {  /* espacio arriba y abajo para componente de firma */
+  margin-top: 40px;
+  margin-bottom: 20px;
+}
+
+.footer {
+  text-align: right;
+  font-size: 0.9rem;
+  margin-top: 40px;
+  color: #777;
+}
+
+.btn-descargar {
+  margin-top: 20px;
+  padding: 15px 100px;
+  font-weight: bold;
+  background-color: red;
+  border: none;
+  color: white;
+  border-radius: 5px;
+}
+
+.header-doc {
+  display: flex;
+  justify-content: space-between; /* Logo a un lado, título al otro */
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.title-doc {
+  flex: 1;
+  text-align: center;
+  font-size: 24px;
+  margin: 0;
+  padding-right: 120px; /* Para compensar el ancho del logo y centrar el título visualmente */
+}
+
+.logo-doc {
+  width: 130px;
+  height: auto;
+  border: 2px solid black;
 }

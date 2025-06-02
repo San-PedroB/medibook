@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 // Inputs
 import NameInput from "../components/formElements/NameInput";
 import IdInput from "../components/formElements/IdInput";
-import EmailInput from "../components/formElements/EmailInput";
 import SpecialtyInput from "../components/formElements/SpecialtyInput";
 import PhoneInput from "../components/formElements/PhoneInput";
 import TimeSelectInput from "../components/formElements/TimeSelectInput";

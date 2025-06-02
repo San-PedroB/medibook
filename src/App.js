@@ -19,6 +19,7 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import CreateDoctor from './views/CreateDoctor';
 import DoctorList from './views/Doctors';
 import BookAppointment from './views/BookAppointment';
+import DoctorDocument from './views/DoctorDocument';
 
 
 function App() {
@@ -93,6 +94,13 @@ function App() {
                 element={
                   <PrivateRoute>
                     <BookAppointment />
+                  </PrivateRoute>
+                }
+                />
+                <Route path="/doctor-document"
+                element={
+                  <PrivateRoute>
+                    <DoctorDocument />
                   </PrivateRoute>
                 }
                 />

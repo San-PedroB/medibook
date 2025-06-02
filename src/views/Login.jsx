@@ -14,6 +14,7 @@ import useFormField from "../hooks/useFormField";
 import { validateFields } from "../utils/formUtils";
 import { triggerAnimation } from "../utils/animationUtils";
 
+
 function Login() {
   const emailField = useFormField();
   const passwordField = useFormField();
