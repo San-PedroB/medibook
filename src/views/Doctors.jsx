@@ -51,6 +51,8 @@ function DoctorList() {
             <th>Especialidad</th>
             <th>Teléfono</th>
             <th>Acciones</th>
+            <th>Fecha de Creación</th>
+            <th>Historial de Citas</th>
           </tr>
         </thead>
         <tbody>

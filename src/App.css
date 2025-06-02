@@ -90,3 +90,15 @@
   height: auto;
   border: 2px solid #129ae8;
 }
+
+.navbar .dropdown:hover .dropdown-menu {
+  display: block;
+  margin-top: 0;
+}
+
+/* Color de fondo y texto al pasar el mouse por las opciones del dropdown */
+.dropdown-menu .dropdown-item:hover,
+.dropdown-menu .dropdown-item:focus {
+  background-color: #129ae8; /* color primary bootstrap */
+  color: white !important;   /* texto blanco */
+}

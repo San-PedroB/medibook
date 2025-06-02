@@ -191,3 +191,14 @@ export async function updateDoctorById(doctorId, updatedFields) {
     throw error;
   }
 }
+
+
+export async function getDoctorById(id) {
+  const docRef = doc(db, "doctors", id);
+  const docSnap = await getDoc(docRef);
+  if (!docSnap.exists()) throw new Error("Médico no encontrado");
+  return { id: docSnap.id, ...docSnap.data() };
+}
+
+
+

@@ -5,7 +5,9 @@ import Footer from './components/Footer';
 import Login from './views/Login';
 import UserRegister from './views/UserRegister';
 import AdminDashboard from './views/AdminDashboard';
+import UserDashboard from './views/UserDashboard'; 
 import CreateAgent from './views/CreateAgent';
+import EditDoctor from './views/EditDoctor';
 import { AuthProvider } from './context/AuthContext';
 import PrivateRoute from './routes/PrivateRoute';
 import Agents from './views/Agents';
@@ -16,6 +18,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'; // importa los estilos CSS
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'; 
 import CreateDoctor from './views/CreateDoctor';
 import DoctorList from './views/Doctors';
+import BookAppointment from './views/BookAppointment';
 
 
 function App() {
@@ -65,10 +68,31 @@ function App() {
                   </PrivateRoute>
                 }
                 />
+                <Route path="/edit-doctor/:id"
+                element={
+                  <PrivateRoute>
+                    <EditDoctor />
+                  </PrivateRoute>
+                }
+                />
                 <Route path="/doctors"
                 element={
                   <PrivateRoute>
                     <Doctors />
+                  </PrivateRoute>
+                }
+                />
+                <Route path="/user-dashboard"
+                element={
+                  <PrivateRoute>
+                    <UserDashboard />
+                  </PrivateRoute>
+                }
+                />
+                <Route path="/book-appointment"
+                element={
+                  <PrivateRoute>
+                    <BookAppointment />
                   </PrivateRoute>
                 }
                 />
