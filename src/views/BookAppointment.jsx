@@ -75,8 +75,6 @@ function BookAppointment() {
           onSubmit={handleRegister}
           fields={[
             <IdInput key="rut" {...rut} label="RUT" />,
-            <NameInput key="name" {...fullName} label="Nombre completo" />,
-            <PhoneInput key="phone" {...phone} label="Número de teléfono" />,
             <SpecialtyInput key="specialty" {...specialty} label="Especialidad" />,
             <TimeSelectInput key="time" {...time} label="Horario" />,
             <DescriptionInput key="description" {...description} label="Descripción breve" />, 

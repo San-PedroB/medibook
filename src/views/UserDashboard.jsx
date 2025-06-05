@@ -22,21 +22,6 @@ const UserDashboard = () => {
           Ya seas paciente, farmacia, médico, clínica u hospital, MediBook está hecho para ti.
           Somos una plataforma en línea diseñada para agendar tus citas médicas.
         </p>
-        <button
-          style={{
-            marginTop: '25px',
-            padding: '12px 30px',
-            backgroundColor: '#00bcd4',
-            color: 'white',
-            border: 'none',
-            borderRadius: '8px',
-            fontSize: '1rem',
-            boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
-            cursor: 'pointer',
-          }}
-        >
-          ÚNETE AHORA
-        </button>
       </div>
 
       {/* Carrusel a la derecha */}

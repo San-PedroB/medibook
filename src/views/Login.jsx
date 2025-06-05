@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { loginUser } from "../services/firebaseService";
+import { getCurrentUserData, loginUser } from "../services/firebaseService";
 
 // Microcomponentes
 import EmailInput from "../components/formElements/EmailInput";
@@ -24,33 +24,26 @@ function Login() {
   const errorRef = useRef(null);
   const navigate = useNavigate();
 
+  
   const handleLogin = async (e) => {
     e.preventDefault();
+  
+    const user = await loginUser({
+      email: emailField.value,
+      password: passwordField.value,
+    });
+  
+    const userData = await getCurrentUserData();
 
-    const fields = [emailField.value, passwordField.value];
-
-    if (!validateFields(fields)) {
-      setErrorMessage("Complete todos los campos");
-      triggerAnimation(errorRef, "animate__headShake");
-      return;
-    }
-
-    setIsSubmitting(true);
-
-    try {
-      await loginUser({
-        email: emailField.value,
-        password: passwordField.value,
-      });
-
-      navigate("/admin-dashboard");
-    } catch (error) {
-      setErrorMessage("Credenciales incorrectas");
-      console.error(error);
-    } finally {
-      setIsSubmitting(false);
-    }
+if (userData.role === "admin") {
+  navigate("/admin-dashboard");
+} else if (userData.role === "agent") {
+  navigate("/admin-dashboard");
+} else if (userData.role === "patient") {
+  navigate("/user-dashboard");
+}
   };
+  
 
   return (
     <div className="container d-flex justify-content-center align-items-center" style={{ minHeight: "70vh" }}>
@@ -67,9 +60,14 @@ function Login() {
           errorRef={errorRef}
           submitText="Entrar"
           footer={
-            <Link to="/register" className="btn btn-link">
-              ¿Quieres registrar a tu empresa? Click aquí
+            <>
+            <Link to="/patient-register" className="btn btn-link">
+              ¿Registrar como Paciente? Click aquí
             </Link>
+            <Link to="/register" className="btn btn-link">
+              ¿Registrar a tu Empresa? Click aquí
+            </Link>
+            </>
           }
         />
       </div>

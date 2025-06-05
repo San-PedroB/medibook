@@ -200,5 +200,21 @@ export async function getDoctorById(id) {
   return { id: docSnap.id, ...docSnap.data() };
 }
 
+// Registro del paciente (usuario normal)
+export async function registerPatient({ fullName, email, password, phone, birthDate, gender }) {
+  const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+  const user = userCredential.user;
 
+  await setDoc(doc(db, "users", user.uid), {
+    name: fullName,
+    email,
+    phone: phone || "",
+    birthDate: birthDate || "", // Formato: "YYYY-MM-DD"
+    gender: gender || "", // Ej: "male", "female", "other"
+    role: "patient",
+    createdAt: serverTimestamp(),
+  });
+
+  return user;
+}
 

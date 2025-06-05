@@ -4,6 +4,7 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Login from './views/Login';
 import UserRegister from './views/UserRegister';
+import PatientRegister from "./views/PatientRegister";
 import AdminDashboard from './views/AdminDashboard';
 import UserDashboard from './views/UserDashboard'; 
 import CreateAgent from './views/CreateAgent';
@@ -103,6 +104,11 @@ function App() {
                     <DoctorDocument />
                   </PrivateRoute>
                 }
+                />
+                <Route path="/patient-register" 
+                element={
+                <PatientRegister />
+                } 
                 />
             </Routes>
           </main>
