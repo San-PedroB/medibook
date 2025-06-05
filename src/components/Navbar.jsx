@@ -31,7 +31,7 @@ function Navbar() {
         <ul className="navbar-nav d-flex flex-row">
           <AppointmentDropdown />
           <li className="nav-item ms-5">
-            <Link className="nav-link btn-outline-light" to="/">Sobre Nosotros</Link>
+            <Link className="nav-link btn-outline-light" to="/aboutus-view">Sobre Nosotros</Link>
           </li>
         </ul>
 

@@ -21,6 +21,7 @@ import BookAppointment from './views/BookAppointment';
 import DoctorDocument from './views/DoctorDocument';
 import 'bootstrap/dist/css/bootstrap.min.css'; // importa los estilos CSS
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'; 
+import AboutUs from './views/AboutUs';
 
 
 function App() {
@@ -108,6 +109,11 @@ function App() {
                 <Route path="/patient-register" 
                 element={
                 <PatientRegister />
+                } 
+                />
+                <Route path="/aboutus-view" 
+                element={
+                <AboutUs />
                 } 
                 />
             </Routes>

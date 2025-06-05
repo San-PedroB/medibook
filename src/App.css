@@ -184,3 +184,18 @@ ul li {
   height: auto;
   border: 2px solid black;
 }
+
+/*SOBRE NOSOTROS*/
+
+.about-us-page img {
+  max-width: 100%;
+  border-radius: 8px;
+}
+
+.about-us-page h1, .about-us-page h2 {
+  color: #ffffff;
+}
+
+.about-us-page ul {
+  padding-left: 1rem;
+}
