@@ -13,7 +13,13 @@ import EditAgent from './views/EditAgent';
 import CreateDoctor from './views/Doctors/CreateDoctor';
 import DoctorList from './views/Doctors/DoctorList'
 import EditDoctor from './views/Doctors/EditDoctor';
-
+import AnimatedBackground from './components/animatedbackground/AnimatedBackground';
+import AboutUs from './views/AboutUs';
+import BookAppointment from './views/BookAppointment';
+import DoctorDocument from './views/DoctorDocument';
+import UserDashboard from './views/UserDashboard'; 
+import 'bootstrap/dist/css/bootstrap.min.css'; // importa los estilos CSS
+import 'bootstrap/dist/js/bootstrap.bundle.min.js'; 
 
 function App() {
   return (
@@ -22,6 +28,7 @@ function App() {
         <div className="d-flex flex-column min-vh-100">
           <Navbar />
           <main className="flex-fill">
+            <AnimatedBackground/>
             <Routes>
               <Route path="/" element={<Login />} />
               <Route path="/login" element={<Login />} />
@@ -72,6 +79,32 @@ function App() {
                 element={
                   <PrivateRoute>
                     <EditDoctor></EditDoctor>
+                  </PrivateRoute>
+                }
+              />
+              <Route path="/aboutus-view" 
+                element={
+                <AboutUs />
+                } 
+              />
+              <Route path="/book-appointment"
+                element={
+                  <PrivateRoute>
+                    <BookAppointment />
+                  </PrivateRoute>
+                }
+              />
+              <Route path="/doctor-document"
+                element={
+                  <PrivateRoute>
+                    <DoctorDocument />
+                  </PrivateRoute>
+                }
+              />
+              <Route path="/user-dashboard"
+                element={
+                  <PrivateRoute>
+                    <UserDashboard />
                   </PrivateRoute>
                 }
               />
