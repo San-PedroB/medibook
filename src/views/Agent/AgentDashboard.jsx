@@ -91,21 +91,10 @@ function AgentDashboard() {
         <div className="col-md-4">
           <div className="card shadow-sm">
             <div className="card-body text-center">
-              <h5 className="card-title">Mi Perfil</h5>
-              <p className="card-text">Actualizar datos y contraseña</p>
+              <h5 className="card-title">Calendario de citas</h5>
+              <p className="card-text">asdasd descripcion asdasd</p>
               <div className="d-grid gap-2">
-                <button
-                  className="btn btn-outline-primary"
-                  onClick={() => navigate("/agent-profile")}
-                >
-                  Editar Perfil
-                </button>
-                <button
-                  className="btn btn-danger"
-                  onClick={() => navigate("/agent-change-password")}
-                >
-                  Cambiar Contraseña
-                </button>
+                <button className="btn btn-primary" onClick={() => navigate("/appointments-calendar")}>Ver Calendario</button>
               </div>
             </div>
           </div>
