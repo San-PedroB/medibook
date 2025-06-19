@@ -18,7 +18,7 @@ export default function EditDoctor() {
   const paternalLastName = useFormField();
   const maternalLastName = useFormField();
   const email = useFormField();
-  const specialties = useFormField([]); // ahora array
+  const specialties = useFormField([]); 
 
   const [availableSpecialties, setAvailableSpecialties] = useState([]);
   const [loading, setLoading] = useState(true);

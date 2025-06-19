@@ -110,12 +110,12 @@ useEffect(() => {
         <div className="col-md-4">
           <div className="card shadow-sm">
             <div className="card-body text-center">
-              <h5 className="card-title">Citas</h5>
+              <h5 className="card-title">Calendario de citas</h5>
               <p className="card-text">Administra las citas agendadas.</p>
               <div className="d-grid gap-2">
                 <button
                   className="btn btn-outline-primary"
-                  onClick={() => navigate("/appointments")}
+                  onClick={() => navigate("/appointments-calendar")}
                 >
                   Ver Citas
                 </button>

@@ -19,6 +19,7 @@ import ManageSpecialties from './views/Admin/ManageSpecialties';
 import AgentDashboard from './views/Agent/AgentDashboard';
 import BookAppointment from './views/Agent/BookAppointment';
 import DoctorDocument from './views/Agent/DoctorDocument';
+import AppointmentsCalendar from "./views/Agent/AppointmentsCalendar";
 
 // 📦 Otras vistas
 import AboutUs from './views/AboutUs';
@@ -52,6 +53,9 @@ function App() {
               <Route path="/create-doctor" element={<PrivateRoute role="admin"><CreateDoctor /></PrivateRoute>} />
               <Route path="/edit-doctor/:id" element={<PrivateRoute role="admin"><EditDoctor /></PrivateRoute>} />
               <Route path="/manage-specialties" element={<PrivateRoute role="admin"><ManageSpecialties /></PrivateRoute>} />
+
+              <Route path="/appointments-calendar" element={<PrivateRoute role="agent"><AppointmentsCalendar /></PrivateRoute>} />
+
               <Route path="/aboutus-view" element={<AboutUs />} />
               <Route path="/book-appointment" element={<PrivateRoute><BookAppointment /></PrivateRoute>} />
               <Route path="/doctor-document" element={<PrivateRoute><DoctorDocument /></PrivateRoute>} />

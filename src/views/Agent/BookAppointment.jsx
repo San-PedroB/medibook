@@ -58,7 +58,7 @@ function BookAppointment() {
         time: time.value,
       });
 
-      navigate("/appointments");
+      navigate("/appointments-calendar");
     } catch (error) {
       console.error("❌ Error al agendar cita:", error);
       setErrorMessage("Error al agendar cita");
