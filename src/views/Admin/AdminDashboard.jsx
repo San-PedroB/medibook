@@ -2,8 +2,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { auth } from "../firebase/firebaseConfig";
-import { getCurrentUserData } from "../services/userService";
+import { auth } from "../../firebase/firebaseConfig";
+import { getCurrentUserData } from "../../services/userService";
 import { onAuthStateChanged } from "firebase/auth";
 
 function AdminDashboard() {
@@ -82,6 +82,24 @@ useEffect(() => {
                   onClick={() => navigate("/doctor-list")}
                 >
                   Ver Médicos
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        {/* Sección Especialidades */}
+        <div className="col-md-4">
+          <div className="card shadow-sm">
+            <div className="card-body text-center">
+              <h5 className="card-title">Especialidades</h5>
+              <p className="card-text">Define las especialidades de tu clínica.</p>
+              <div className="d-grid gap-2">
+                <button
+                  className="btn btn-primary"
+                  onClick={() => navigate("/manage-specialties")}
+                >
+                  Gestionar Especialidades
                 </button>
               </div>
             </div>

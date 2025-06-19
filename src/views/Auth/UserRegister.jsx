@@ -1,20 +1,18 @@
-// src/views/Register.jsx
-
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { registerAdmin } from "../services/userService";
+import { registerAdmin } from "../../services/userService";
 
 // Microcomponentes
-import NameInput from "../components/formElements/NameInput";
-import EmailInput from "../components/formElements/EmailInput";
-import PasswordInput from "../components/formElements/PasswordInput";
-import AuthForm from "../components/AuthForm";
+import NameInput from "../../components/formElements/NameInput";
+import EmailInput from "../../components/formElements/EmailInput";
+import PasswordInput from "../../components/formElements/PasswordInput";
+import AuthForm from "../../components/auth/AuthForm";
 
 // Utils y hooks
-import useFormField from "../hooks/useFormField";
-import { validateFields } from "../utils/formUtils";
-import { passwordsMatch } from "../utils/passwordUtils";
-import { triggerAnimation } from "../utils/animationUtils";
+import useFormField from "../../hooks/useFormField";
+import { validateFields } from "../../utils/formUtils";
+import { passwordsMatch } from "../../utils/passwordUtils";
+import { triggerAnimation } from "../../utils/animationUtils";
 
 function UserRegister() {
   const fullName = useFormField();

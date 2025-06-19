@@ -1,4 +1,4 @@
-import EditAgentDetails from "../components/agent/EditAgentDetails"
+import EditAgentDetails from "../../components/agent/EditAgentDetails"
 //import EditAgentPassword from "../components/agent/EditAgentPassword"
 import { useParams } from "react-router-dom";
 

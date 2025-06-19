@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
-import SignaturePad from '../components/signaturepad/SignaturePad.jsx';
+import SignaturePad from '../../components/signaturepad/SignaturePad.jsx';
 
 const DoctorDocument = () => {
   const pdfRef = useRef();

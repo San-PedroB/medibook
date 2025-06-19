@@ -18,6 +18,8 @@ import EditAgentPassword from "./EditAgentPassword";
 
 function EditAgentDetails({ agentId }) {
   const name = useFormField();
+  const lastName = useFormField();
+  const secondLastName = useFormField();
   const email = useFormField();
   const errorRef = useRef(null);
   const [errorMessage, setErrorMessage] = useState("");
@@ -36,6 +38,8 @@ function EditAgentDetails({ agentId }) {
 
         const data = agentSnap.data();
         name.setValue(data.name || "");
+        lastName.setValue(data.lastName || "");
+        secondLastName.setValue(data.secondLastName || "");
         email.setValue(data.email || "");
       } catch {
         setErrorMessage("Error al cargar los datos del agente.");
@@ -57,7 +61,7 @@ function EditAgentDetails({ agentId }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const fields = [name.value, email.value];
+    const fields = [name.value, lastName.value, secondLastName.value, email.value];
 
     if (!validateFields(fields)) {
       setErrorMessage("Complete todos los campos.");
@@ -70,8 +74,11 @@ function EditAgentDetails({ agentId }) {
     try {
       await updateAgentById(agentId, {
         name: name.value,
+        lastName: lastName.value,
+        secondLastName: secondLastName.value,
         email: email.value,
       });
+
       navigate("/agents");
     } catch (err) {
       console.error("❌ Error al actualizar agente:", err);
@@ -87,9 +94,11 @@ function EditAgentDetails({ agentId }) {
   return (
     <>
       <form onSubmit={handleSubmit} className="card p-4 mx-auto" style={{ maxWidth: "400px" }}>
-        <NameInput {...name} label="Nombre completo" />
+        <NameInput {...name} label="Nombre" />
+        <NameInput {...lastName} label="Apellido paterno" />
+        <NameInput {...secondLastName} label="Apellido materno" />
         <EmailInput {...email} label="Correo electrónico" />
-        
+
         <button
           type="button"
           className="btn btn-outline-secondary w-100 mt-3"

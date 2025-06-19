@@ -4,11 +4,9 @@ import { setDoc, getDoc, doc, serverTimestamp, deleteDoc, query, collection, whe
 
 
 // Crea un nuevo agente usando una Cloud Function protegida
-export async function registerAgent({ fullName, email, password }) {
+export async function registerAgent({ name, lastName, secondLastName, email, password }) {
   const currentUser = auth.currentUser;
-  if (!currentUser) {
-    throw new Error("No hay usuario autenticado.");
-  }
+  if (!currentUser) throw new Error("No hay usuario autenticado.");
 
   const token = await currentUser.getIdToken(true);
 
@@ -18,7 +16,7 @@ export async function registerAgent({ fullName, email, password }) {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({ fullName, email, password }),
+    body: JSON.stringify({ name, lastName, secondLastName, email, password }),
   });
 
   if (!response.ok) {
@@ -27,9 +25,9 @@ export async function registerAgent({ fullName, email, password }) {
     throw new Error("Error al crear agente");
   }
 
-  const data = await response.json();
-  return data;
+  return await response.json();
 }
+
 
 
 // Registro del administrador
@@ -55,18 +53,31 @@ export async function loginUser({ email, password }) {
   return userCredential.user;
 }
 
-/**
- * Elimina un agente por su ID (uid de Firebase Auth)
- */
+
 export async function deleteAgentById(agentId) {
-  try {
-    await deleteDoc(doc(db, "users", agentId));
-    return { success: true };
-  } catch (error) {
-    console.error("❌ Error al eliminar agente desde userService:", error);
-    throw error;
+  const currentUser = auth.currentUser;
+  if (!currentUser) throw new Error("No hay usuario autenticado");
+
+  const token = await currentUser.getIdToken(true);
+
+  const response = await fetch("https://us-central1-medibook-60739.cloudfunctions.net/deleteAgentUserHttp", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`
+    },
+    body: JSON.stringify({ agentId })
+  });
+
+  const result = await response.json();
+  if (!response.ok) {
+    console.error("❌ Error desde el backend:", result.error);
+    throw new Error(result.error || "Error al eliminar agente");
   }
+
+  return result;
 }
+
 
 export async function getAgentsByCompanyId(companyId) {
   try {
@@ -123,8 +134,10 @@ export async function getCurrentUserData() {
 
   const userRef = doc(db, "users", user.uid);
   const userSnap = await getDoc(userRef);
-  return userSnap.exists() ? userSnap.data() : null;
+  if (!userSnap.exists()) return null;
+  return { uid: user.uid, ...userSnap.data() };
 }
+
 
 // 🔓 Logout
 export async function logoutUser() {

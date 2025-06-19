@@ -2,18 +2,18 @@ import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 // Inputs
-import NameInput from "../components/formElements/NameInput";
-import IdInput from "../components/formElements/IdInput";
-import SpecialtyInput from "../components/formElements/SpecialtyInput";
-import PhoneInput from "../components/formElements/PhoneInput";
-import TimeSelectInput from "../components/formElements/TimeSelectInput";
-import DescriptionInput from "../components/formElements/DescriptionInput"; // Importa aquí
-import AuthForm from "../components/AuthForm";
+import NameInput from "../../components/formElements/NameInput";
+import IdInput from "../../components/formElements/IdInput";
+import SpecialtyInput from "../../components/formElements/SpecialtyInput";
+import PhoneInput from "../../components/formElements/PhoneInput";
+import TimeSelectInput from "../../components/formElements/TimeSelectInput";
+import DescriptionInput from "../../components/formElements/DescriptionInput"; // Importa aquí
+import AuthForm from "../../components/auth/AuthForm";
 
 // Utils
-import useFormField from "../hooks/useFormField";
-import { validateFields } from "../utils/formUtils";
-import { triggerAnimation } from "../utils/animationUtils";
+import useFormField from "../../hooks/useFormField";
+import { validateFields } from "../../utils/formUtils";
+import { triggerAnimation } from "../../utils/animationUtils";
 
 function BookAppointment() {
   // Usamos el hook para cada input

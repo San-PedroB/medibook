@@ -1,7 +1,7 @@
 // src/components/AuthForm.jsx
 
-import ErrorMessage from "./formElements/ErrorMessage";
-import SubmitButton from "./formElements/SubmitButton";
+import ErrorMessage from "../formElements/ErrorMessage";
+import SubmitButton from "../formElements/SubmitButton";
 
 function AuthForm({
   onSubmit,

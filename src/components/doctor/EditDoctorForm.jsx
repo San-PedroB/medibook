@@ -1,102 +1,50 @@
-// /components/doctor/EditDoctorForm.jsx
-
-import { useEffect, useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "../../firebase/firebaseConfig";
-import { updateDoctor } from "../../services/doctorService";
-
-import useFormField from "../../hooks/useFormField";
-import { validateFields } from "../../utils/formUtils";
-import { triggerAnimation } from "../../utils/animationUtils";
-
-// Microcomponentes
+// === src/components/doctor/EditDoctorForm.jsx ===
+import React from "react";
 import NameInput from "../formElements/NameInput";
 import EmailInput from "../formElements/EmailInput";
-import SubmitButton from "../formElements/SubmitButton";
 import ErrorMessage from "../formElements/ErrorMessage";
+import SubmitButton from "../formElements/SubmitButton";
+import Select from "react-select";
 
-function EditDoctorForm({ doctorId }) {
-  const name = useFormField();
-  const email = useFormField();
-  const specialties = useFormField();
-
-  const [errorMessage, setErrorMessage] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const errorRef = useRef(null);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const fetchDoctor = async () => {
-      try {
-        const doctorRef = doc(db, "doctors", doctorId);
-        const doctorSnap = await getDoc(doctorRef);
-        if (!doctorSnap.exists()) throw new Error();
-
-        const data = doctorSnap.data();
-        name.setValue(data.name || "");
-        email.setValue(data.email || "");
-        specialties.setValue(data.specialties?.join(", ") || "");
-      } catch (error) {
-        setErrorMessage("Error al cargar los datos del médico.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchDoctor();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [doctorId]);   
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const fields = [name.value, email.value, specialties.value];
-    if (!validateFields(fields)) {
-      setErrorMessage("Complete todos los campos.");
-      triggerAnimation(errorRef, "animate__headShake");
-      return;
-    }
-
-    try {
-      setIsSubmitting(true);
-      await updateDoctor(doctorId, {
-        name: name.value,
-        email: email.value,
-        specialties: specialties.value.split(",").map((s) => s.trim()),
-      });
-      navigate("/doctor-list");
-    } catch (error) {
-      console.error("❌ Error al actualizar médico:", error);
-      setErrorMessage("No se pudo actualizar el médico.");
-      triggerAnimation(errorRef, "animate__headShake");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  if (loading) return <div className="container mt-3">Cargando datos del médico...</div>;
+export default function EditDoctorForm({
+  formFields: { firstName, paternalLastName, maternalLastName, email, specialties },
+  onSubmit,
+  isSubmitting,
+  errorMessage,
+  errorRef,
+  availableSpecialties
+}) {
+  const specialtyOptions = availableSpecialties.map((spec) => ({
+    value: spec.name,
+    label: spec.name
+  }));
 
   return (
-    <form onSubmit={handleSubmit} className="card p-4 mx-auto" style={{ maxWidth: "400px" }}>
-      <NameInput {...name} label="Nombre completo" />
-      <EmailInput {...email} label="Correo electrónico" />
+    <form onSubmit={onSubmit} className="card p-4 mx-auto" style={{ maxWidth: "400px" }}>
+      <NameInput key="firstName" {...firstName} label="Nombre" />
+      <NameInput key="paternalLastName" {...paternalLastName} label="Apellido Paterno" />
+      <NameInput key="maternalLastName" {...maternalLastName} label="Apellido Materno" />
+      <EmailInput key="email" {...email} label="Correo Electrónico" />
+
       <div className="mb-3">
         <label className="form-label">Especialidades</label>
-        <input
-          type="text"
-          className="form-control"
-          value={specialties.value}
-          onChange={specialties.onChange}
-          placeholder="Ej: Ginecología, Traumatología"
+        <Select
+          isMulti
+          placeholder="Seleccione una o mas..."
+          options={specialtyOptions}
+          value={specialtyOptions.filter(opt => specialties.value.includes(opt.value))}
+          onChange={(selectedOptions) => {
+            const selectedValues = selectedOptions.map(opt => opt.value);
+            specialties.onChange({ target: { value: selectedValues } });
+          }}
         />
       </div>
 
       {errorMessage && <ErrorMessage message={errorMessage} forwardedRef={errorRef} />}
-      <SubmitButton text="Guardar Cambios" isSubmitting={isSubmitting} />
+      
+      <div className="d-grid">
+        <SubmitButton text="Guardar Cambios" isSubmitting={isSubmitting} />
+      </div>
     </form>
   );
 }
-
-export default EditDoctorForm;

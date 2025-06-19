@@ -1,22 +1,36 @@
-// /src/services/doctorService.js
-
+// === src/services/doctorService.js ===
 import { db } from "../firebase/firebaseConfig";
 import {
   collection,
   addDoc,
   getDocs,
+  getDoc,
   updateDoc,
   deleteDoc,
   doc,
   query,
   where,
+  orderBy,
   serverTimestamp
 } from "firebase/firestore";
 
-// 🆕 Crear médico
-export async function createDoctor({ name, email, specialties, companyId }) {
+/**
+ * 🆕 Crear un nuevo médico en Firestore con campos de nombre separados
+ */
+export async function createDoctor({
+  firstName,
+  paternalLastName,
+  maternalLastName,
+  email,
+  specialties,
+  companyId
+}) {
+  const fullName = `${firstName} ${paternalLastName} ${maternalLastName}`;
   const newDoctor = {
-    name,
+    firstName,
+    paternalLastName,
+    maternalLastName,
+    fullName,
     email,
     specialties,
     companyId,
@@ -27,27 +41,48 @@ export async function createDoctor({ name, email, specialties, companyId }) {
   return { id: docRef.id, ...newDoctor };
 }
 
-// 📋 Obtener médicos por empresa
+/**
+ * 📋 Obtener todos los médicos de una empresa,
+ *    ordenados por apellido paterno ascendente
+ */
 export async function getDoctorsByCompanyId(companyId) {
   const q = query(
     collection(db, "doctors"),
-    where("companyId", "==", companyId)
+    where("companyId", "==", companyId),
+    orderBy("paternalLastName", "asc"),
+    orderBy("maternalLastName", "asc")
   );
-
   const snapshot = await getDocs(q);
-  return snapshot.docs.map(doc => ({
-    id: doc.id,
-    ...doc.data()
-  }));
+  return snapshot.docs.map(docSnap => ({ id: docSnap.id, ...docSnap.data() }));
 }
 
-// ✏️ Actualizar médico
+/**
+ * 📄 Obtener un único médico por su ID
+ */
+export async function getDoctorById(doctorId) {
+  const docRef = doc(db, "doctors", doctorId);
+  const snap = await getDoc(docRef);
+  if (!snap.exists()) throw new Error("Médico no encontrado");
+  return { id: snap.id, ...snap.data() };
+}
+
+/**
+ * ✏️ Actualizar campos de un médico existente
+ */
 export async function updateDoctor(doctorId, updatedFields) {
   const doctorRef = doc(db, "doctors", doctorId);
-  await updateDoc(doctorRef, updatedFields);
+  const payload = {
+    ...updatedFields,
+    fullName: `${updatedFields.firstName} ${updatedFields.paternalLastName} ${updatedFields.maternalLastName}`,
+    updatedAt: serverTimestamp()
+  };
+  await updateDoc(doctorRef, payload);
 }
 
-// ❌ Eliminar médico
+/**
+ * ❌ Eliminar un médico por su ID
+ */
 export async function deleteDoctor(doctorId) {
-  await deleteDoc(doc(db, "doctors", doctorId));
+  const doctorRef = doc(db, "doctors", doctorId);
+  await deleteDoc(doctorRef);
 }

@@ -1,23 +1,26 @@
 // src/views/Register.jsx
-import { auth } from "../firebase/firebaseConfig";
+import { auth } from "../../firebase/firebaseConfig";
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { registerAgent } from "../services/userService";
+import { registerAgent } from "../../services/userService";
 
 // Microcomponentes
-import NameInput from "../components/formElements/NameInput";
-import EmailInput from "../components/formElements/EmailInput";
-import PasswordInput from "../components/formElements/PasswordInput";
-import AuthForm from "../components/AuthForm";
+import NameInput from "../../components/formElements/NameInput";
+import EmailInput from "../../components/formElements/EmailInput";
+import PasswordInput from "../../components/formElements/PasswordInput";
+import AuthForm from "../../components/auth/AuthForm";
+
 
 // Utils y hooks
-import useFormField from "../hooks/useFormField";
-import { validateFields } from "../utils/formUtils";
-import { passwordsMatch } from "../utils/passwordUtils";
-import { triggerAnimation } from "../utils/animationUtils";
+import useFormField from "../../hooks/useFormField";
+import { validateFields } from "../../utils/formUtils";
+import { passwordsMatch } from "../../utils/passwordUtils";
+import { triggerAnimation } from "../../utils/animationUtils";
 
 function CreateAgent() {
-  const fullName = useFormField();
+  const name = useFormField();
+  const lastName = useFormField();
+  const secondLastName = useFormField();
   const email = useFormField();
   const password = useFormField();
   const confirmPassword = useFormField();
@@ -30,7 +33,7 @@ function CreateAgent() {
 const handleRegister = async (e) => {
   e.preventDefault();
 
-  const fields = [fullName.value, email.value, password.value, confirmPassword.value];
+  const fields = [name.value, lastName.value, secondLastName.value, email.value, password.value, confirmPassword.value];
 
   if (!validateFields(fields)) {
     setErrorMessage("Complete todos los campos");
@@ -66,14 +69,19 @@ try {
   console.log("✅ Token refrescado:", token);
 
   const result = await registerAgent({
-    fullName: fullName.value,
+    name: name.value,
+    lastName: lastName.value,
+    secondLastName: secondLastName.value,
     email: email.value,
     password: password.value,
   });
 
   console.log("✅ Agente registrado correctamente:", result); // <-- este es clave
 
-  navigate("/admin-dashboard");
+  setTimeout(() => {
+  navigate("/agents");
+}, 1000); 
+
 
 } catch (error) {
   console.error("❌ Error desde frontend al registrar agente:", error); // <-- este también
@@ -91,7 +99,9 @@ try {
         <AuthForm
           onSubmit={handleRegister}
           fields={[
-            <NameInput key="name" {...fullName} label="Nombre completo" />,
+            <NameInput key="name" {...name} label="Nombre" />,
+            <NameInput key="lastName" {...lastName} label="Primer apellido" />,
+            <NameInput key="secondLastName" {...secondLastName} label="Segundo apellido" />,
             <EmailInput key="email" {...email} label="Correo electrónico" />,
             <PasswordInput key="password" {...password} label="Contraseña" />,
             <PasswordInput key="confirm" {...confirmPassword} label="Confirmar contraseña" />,

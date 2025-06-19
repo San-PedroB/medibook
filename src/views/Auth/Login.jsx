@@ -1,18 +1,18 @@
-// src/views/Login.jsx
-
 import { useState, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { loginUser } from "../services/userService";
+import { loginUser, getCurrentUserData } from "../../services/userService";
+
 
 // Microcomponentes
-import EmailInput from "../components/formElements/EmailInput";
-import PasswordInput from "../components/formElements/PasswordInput";
-import AuthForm from "../components/AuthForm";
+import EmailInput from "../../components/formElements/EmailInput";
+import PasswordInput from "../../components/formElements/PasswordInput";
+import AuthForm from "../../components/auth/AuthForm";
+
 
 // Utils
-import useFormField from "../hooks/useFormField";
-import { validateFields } from "../utils/formUtils";
-import { triggerAnimation } from "../utils/animationUtils";
+import useFormField from "../../hooks/useFormField";
+import { validateFields } from "../../utils/formUtils";
+import { triggerAnimation } from "../../utils/animationUtils";
 
 function Login() {
   const emailField = useFormField();
@@ -25,7 +25,6 @@ function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
     const fields = [emailField.value, passwordField.value];
 
     if (!validateFields(fields)) {
@@ -35,17 +34,25 @@ function Login() {
     }
 
     setIsSubmitting(true);
-
     try {
       await loginUser({
         email: emailField.value,
         password: passwordField.value,
       });
 
-      navigate("/admin-dashboard");
+      const userData = await getCurrentUserData();
+      if (!userData) throw new Error("Perfil no encontrado");
+
+      if (userData.role === "admin") {
+        navigate("/admin-dashboard");
+      } else if (userData.role === "agent") {
+        navigate("/agent-dashboard");
+      } else {
+        setErrorMessage("Rol de usuario no válido");
+      }
     } catch (error) {
-      setErrorMessage("Credenciales incorrectas");
       console.error(error);
+      setErrorMessage("Credenciales incorrectas");
     } finally {
       setIsSubmitting(false);
     }
