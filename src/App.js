@@ -20,6 +20,9 @@ import AgentDashboard from './views/Agent/AgentDashboard';
 import BookAppointment from './views/Agent/BookAppointment';
 import DoctorDocument from './views/Agent/DoctorDocument';
 import AppointmentsCalendar from "./views/Agent/AppointmentsCalendar";
+import CreatePatientView from './views/Patients/CreatePatientView';
+import PatientListView from './views/Patients/PatientListView';
+
 
 // 📦 Otras vistas
 import AboutUs from './views/AboutUs';
@@ -55,11 +58,13 @@ function App() {
               <Route path="/manage-specialties" element={<PrivateRoute role="admin"><ManageSpecialties /></PrivateRoute>} />
 
               <Route path="/appointments-calendar" element={<PrivateRoute role="agent"><AppointmentsCalendar /></PrivateRoute>} />
+              <Route path="/create-patient" element={<PrivateRoute role="agent"><CreatePatientView /></PrivateRoute>} />
+              <Route path="/patient-list-view" element={<PrivateRoute role="agent"><PatientListView /></PrivateRoute>} />
 
               <Route path="/aboutus-view" element={<AboutUs />} />
               <Route path="/book-appointment" element={<PrivateRoute><BookAppointment /></PrivateRoute>} />
-              <Route path="/doctor-document" element={<PrivateRoute><DoctorDocument /></PrivateRoute>} />
-              <Route path="/user-dashboard" element={<PrivateRoute><UserDashboard /></PrivateRoute>} />
+              <Route path="/doctor-document" element={<PrivateRoute role="agent" ><DoctorDocument /></PrivateRoute>} />
+              <Route path="/user-dashboard" element={<PrivateRoute role="agent"><UserDashboard /></PrivateRoute>} />
             </Routes>
           </main>
           <Footer />
