@@ -17,8 +17,7 @@ export default function CreatePatientView() {
   // Hooks para cada campo
   const firstName     = useFormField();
   const lastName      = useFormField();
-  const rutNumber     = useFormField();
-  const rutDv         = useFormField();
+  const rut           = useFormField();
   const phone         = useFormField();
   const email         = useFormField();
   const birthDate     = useFormField();
@@ -30,8 +29,7 @@ export default function CreatePatientView() {
   const formFields = {
     firstName,
     lastName,
-    rutNumber,
-    rutDv,
+    rut,
     phone,
     email,
     birthDate,
@@ -48,8 +46,7 @@ export default function CreatePatientView() {
     const values = [
       firstName.value,
       lastName.value,
-      rutNumber.value,
-      rutDv.value,
+      rut.value,
       phone.value,
       email.value,
       birthDate.value,
@@ -67,11 +64,10 @@ export default function CreatePatientView() {
 
     try {
       setIsSubmitting(true);
-      const fullRut = `${rutNumber.value}-${rutDv.value}`;
       await createPatient({
         firstName:     firstName.value,
         lastName:      lastName.value,
-        rut:           fullRut,
+        rut:           rut.value,
         phone:         phone.value,
         email:         email.value,
         birthDate:     birthDate.value,

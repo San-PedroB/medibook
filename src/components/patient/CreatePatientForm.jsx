@@ -7,7 +7,6 @@ import EmailInput from "../formElements/EmailInput";
 import PhoneInput from "../formElements/PhoneInput";
 import DateInput from "../formElements/DateInput";
 import CountrySelect from "../formElements/CountrySelect";
-import { RutInput } from "../formElements/RutInput";
 import SubmitButton from "../formElements/SubmitButton";
 
 export default function CreatePatientForm({
@@ -20,8 +19,6 @@ export default function CreatePatientForm({
   const {
     firstName,
     lastName,
-    rutNumber,
-    rutDv,
     phone,
     email,
     birthDate,
@@ -58,16 +55,6 @@ export default function CreatePatientForm({
             controlId="lastName"
             label="Apellido"
             placeholder="Ej: Pérez"
-          />
-        </Col>
-        <Col md={6}>
-          <RutInput
-            numberField={rutNumber}
-            dvField={rutDv}
-            controlId="rut"
-            label="Rut"
-            placeholderNumber="Ej: 12345678"
-            placeholderDv="9"
           />
         </Col>
         <Col md={6}>

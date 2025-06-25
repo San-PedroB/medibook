@@ -1,31 +1,59 @@
 // src/components/formElements/PhoneInput.jsx
 import React from 'react';
-import { Form } from 'react-bootstrap';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/bootstrap.css';
+import FieldError from './FieldError';
 
-export default function PhoneInputField({ field, controlId, label = 'Teléfono' }) {
+export default function PhoneInputField({
+  value = '',
+  onChange = () => {},
+  name = 'phone',
+  label = 'Teléfono',
+  country = 'cl',
+  onlyCountries = ['cl'],
+  isInvalid = false,
+  errorMessage = '',
+  placeholder = '',
+  ...rest
+}) {
   return (
-    <Form.Group controlId={controlId} className="mb-3">
-      {label && <Form.Label>{label}</Form.Label>}
+    <div className='mb-3'>
+      {label && <label className='form-label'>{label}</label>}
       <PhoneInput
-        country="cl"
-        value={field.value}
-        onChange={phone => field.onChange({ target: { value: phone } })}
-        enableAreaCodes
-        enableSearch
+        country={country}
+        onlyCountries={onlyCountries}
+        value={value}
+        onChange={phone => onChange({ target: { name, value: phone } })}
+        placeholder={placeholder}
+        inputProps={{
+          name,
+          required: true,
+          autoFocus: false,
+          ...rest
+        }}
+        // ❌ quitamos esto: masks={{ cl: '(9) XXXX XXXX' }}
+        // ❌ también evitamos enableAreaCodes
         containerStyle={{ width: '100%' }}
         inputStyle={{
           width: '100%',
-          height: 'calc(1.5em + 0.75rem + 2px)',
-          padding: '0.375rem 0.75rem 0.375rem 4rem',
+          height: '38px',
           fontSize: '1rem',
-          lineHeight: '1.5',
+          paddingLeft: '60px',
+          paddingRight: '0.75rem',
           border: '1px solid #CED4DA',
-          borderRadius: '.25rem'
+          borderRadius: '0.25rem',
+          lineHeight: '1.5'
         }}
-        buttonStyle={{ border: 'none', zIndex: 2 }}
+        buttonStyle={{
+          border: '1px solid #CED4DA',
+          borderRight: 'none',
+          height: '38px',
+          backgroundColor: '#fff',
+          borderRadius: '0.25rem 0 0 0.25rem'
+        }}
+        inputClass={isInvalid ? 'is-invalid' : ''}
       />
-    </Form.Group>
+      <FieldError message={errorMessage} />
+    </div>
   );
 }

@@ -1,29 +1,32 @@
 // src/components/formElements/RutInput.jsx
 import React from 'react';
-import { Form, InputGroup } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
+import FieldError from './FieldError';
 
-export function RutInput({ numberField, dvField, controlId, label = 'Rut', placeholderNumber = '', placeholderDv = '' }) {
+export default function RutInput({
+  name,
+  label = 'RUT',
+  value = '',
+  onChange = () => {},
+  controlId,
+  placeholder = 'Ej: 18529883-3',
+  isInvalid = false,
+  errorMessage = ''
+}) {
   return (
-    <Form.Group controlId={controlId} className="mb-3">
+    <Form.Group controlId={controlId || name} className='mb-3'>
       {label && <Form.Label>{label}</Form.Label>}
-      <InputGroup>
-        <Form.Control
-          type="text"
-          placeholder={placeholderNumber}
-          value={numberField.value}
-          onChange={numberField.onChange}
-          maxLength={8}
-        />
-        <InputGroup.Text>-</InputGroup.Text>
-        <Form.Control
-          type="text"
-          placeholder={placeholderDv}
-          value={dvField.value}
-          onChange={dvField.onChange}
-          maxLength={1}
-          style={{ maxWidth: '4rem' }}
-        />
-      </InputGroup>
+      <Form.Control
+        type='text'
+        name={name}
+        value={value}
+        onChange={onChange}
+        placeholder={placeholder}
+        autoComplete='off'
+        maxLength={10}
+        isInvalid={isInvalid}
+      />
+      <FieldError message={errorMessage} />
     </Form.Group>
   );
 }

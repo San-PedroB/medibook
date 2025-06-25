@@ -1,19 +1,27 @@
-import React from "react";
+// src/components/formElements/DescriptionInput.jsx
+import React from 'react';
+import FieldError from './FieldError';
 
-function DescriptionInput({ value, onChange, label, error }) {
+export default function DescriptionInput({
+  name,
+  value = '',
+  onChange = () => {},
+  label = 'Descripción',
+  errorMessage = '',
+  placeholder = 'Escribe una breve descripción o contexto...'
+}) {
   return (
-    <div className="form-group mb-3">
-      <label>{label}</label>
+    <div className='form-group mb-3'>
+      <label htmlFor={name}>{label}</label>
       <textarea
-        className={`form-control ${error ? "is-invalid" : ""}`}
-        rows={4} // Un poco más largo que un input normal
+        className={`form-control ${errorMessage ? 'is-invalid' : ''}`}
+        rows={4}
+        name={name}
         value={value}
         onChange={onChange}
-        placeholder="Escribe una breve descripción o contexto..."
+        placeholder={placeholder}
       />
-      {error && <div className="invalid-feedback">{error}</div>}
+      <FieldError message={errorMessage} />
     </div>
   );
 }
-
-export default DescriptionInput;

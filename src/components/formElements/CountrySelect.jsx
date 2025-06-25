@@ -2,16 +2,25 @@
 import React from 'react';
 import { Form } from 'react-bootstrap';
 import { CountryDropdown } from 'react-country-region-selector';
+import FieldError from './FieldError';
 
-export default function CountrySelect({ field, controlId, label = 'Nacionalidad' }) {
+export default function CountrySelect({
+  name,
+  label = 'Nacionalidad',
+  value = '',
+  onChange = () => {},
+  controlId,
+  isInvalid = false,
+  errorMessage = ''
+}) {
   return (
-    <Form.Group controlId={controlId} className="mb-3">
+    <Form.Group controlId={controlId || name} className='mb-3'>
       {label && <Form.Label>{label}</Form.Label>}
       <CountryDropdown
-        value={field.value}
-        onChange={val => field.onChange({ target: { value: val } })}
-        defaultOptionLabel="Seleccione nacionalidad"
-        classes="form-select"
+        value={value}
+        onChange={val => onChange({ target: { name, value: val } })}
+        defaultOptionLabel='Seleccione nacionalidad'
+        classes={`form-select ${isInvalid ? 'is-invalid' : ''}`}
         style={{
           width: '100%',
           height: 'calc(1.5em + 0.75rem + 2px)',
@@ -22,6 +31,7 @@ export default function CountrySelect({ field, controlId, label = 'Nacionalidad'
           borderRadius: '.25rem'
         }}
       />
+      <FieldError message={errorMessage} />
     </Form.Group>
   );
 }
