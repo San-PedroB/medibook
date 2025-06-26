@@ -9,6 +9,7 @@ import {
   isValidChileanPhoneFull
 } from './formUtils';
 
+
 export function validateRegisterAdminCompanyForm({ admin, company, account }) {
   const errors = {};
 
@@ -41,6 +42,28 @@ export function validateRegisterAdminCompanyForm({ admin, company, account }) {
   if (!isValidEmail(account.email)) errors.email = 'Formato inválido';
   if (account.password.length < 8 || account.password.length > 32) errors.password = 'Formato inválido';
   if (account.password !== account.confirmPassword) errors.confirmPassword = 'Formato inválido';
+
+  return errors;
+}
+
+export function validatePatientForm(patient) {
+  const errors = {};
+
+  if (!isValidText(patient.firstName, 3, 20)) errors.firstName = "Formato inválido";
+  if (!isValidText(patient.lastNameP, 3, 20)) errors.lastNameP = "Formato inválido";
+  if (!isValidText(patient.lastNameM, 3, 20)) errors.lastNameM = "Formato inválido";
+
+  if (!/^[0-9]{7,8}-[0-9Kk]$/.test(patient.rut) || !isValidRut(patient.rut)) {
+    errors.rut = "RUT inválido";
+  }
+
+  if (!isValidChileanPhoneFull(patient.phone)) errors.phone = "Teléfono inválido";
+
+  if (!isValidEmail(patient.email)) errors.email = "Email inválido";
+
+  if (!isValidText(patient.address, 3, 100)) errors.address = "Dirección inválida";
+
+  // Agrega más validaciones según necesidad (fecha, género, previsión...)
 
   return errors;
 }

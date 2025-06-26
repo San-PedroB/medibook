@@ -13,9 +13,10 @@ export default function CreateDoctor() {
   const firstName        = useFormField();
   const paternalLastName = useFormField();
   const maternalLastName = useFormField();
+  const rut              = useFormField();
   const email            = useFormField();
   const specialties      = useFormField([]); // ← array
-  const formFields       = { firstName, paternalLastName, maternalLastName, email, specialties };
+  const formFields       = { firstName, paternalLastName, maternalLastName, rut, email, specialties };
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -46,6 +47,7 @@ export default function CreateDoctor() {
       firstName.value,
       paternalLastName.value,
       maternalLastName.value,
+      rut.value, 
       email.value,
       specialties.value
     ];
@@ -63,6 +65,7 @@ export default function CreateDoctor() {
         firstName:        firstName.value,
         paternalLastName: paternalLastName.value,
         maternalLastName: maternalLastName.value,
+        rut:              rut.value,
         email:            email.value,
         specialties:      specialties.value,
         companyId:        user.companyId,

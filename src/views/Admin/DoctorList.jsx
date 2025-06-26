@@ -48,6 +48,7 @@ function DoctorList() {
     { header: "Apellido Paterno", accessorKey: "paternalLastName" },
     { header: "Apellido Materno", accessorKey: "maternalLastName" },
     { header: "Correo", accessorKey: "email" },
+    { header: "RUT", accessorKey: "rut" },
     {
       header: "Fecha de Registro",
       accessorKey: "createdAt",

@@ -1,3 +1,4 @@
+// src/views/AppointmentsCalendar.jsx
 import React from "react";
 import CalendarView from "../../components/calendar/CalendarView";
 

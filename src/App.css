@@ -199,3 +199,108 @@ ul li {
 .about-us-page ul {
   padding-left: 1rem;
 }
+
+
+.calendar-event-content {
+  background: #1976d2;
+  color: #fff;
+  border-radius: 10px;
+  padding: 12px 8px 10px 8px;
+  min-height: 54px;
+  min-width: 120px;
+  box-shadow: 0 2px 12px #0002;
+  display: flex;
+  flex-direction: column;
+  align-items: center;       /* CENTRA HORIZONTAL */
+  justify-content: center;   /* CENTRA VERTICAL */
+  text-align: center;        /* TEXTO AL CENTRO */
+  white-space: normal;
+  overflow: hidden;
+  gap: 2px;
+}
+
+.calendar-event-patient {
+  font-weight: bold;
+  font-size: 1.15rem;
+  line-height: 1.08;
+  text-transform: capitalize;
+  margin-bottom: 2px;
+}
+
+.calendar-event-doctor {
+  font-size: 1rem;
+  opacity: 0.94;
+  font-style: italic;
+  font-weight: 500;
+  margin-bottom: 1px;
+}
+
+.calendar-event-specialty {
+  font-size: 0.92rem;
+  color: #ffe082;
+  margin-top: 0;
+  font-weight: 500;
+  font-style: normal;
+  line-height: 1.1;
+}
+
+.calendar-event-content:hover {
+  background: #1253a4;
+  box-shadow: 0 4px 16px #0003;
+  cursor: pointer;
+}
+
+.calendar-event-horario {
+  font-size: 0.94rem;
+  color: #c3fdff;
+  margin-top: 4px;
+  font-weight: 500;
+  font-style: normal;
+  line-height: 1.1;
+}
+
+.calendar-event-patient {
+  font-weight: bold;
+  font-size: 1.15rem;
+  line-height: 1.08;
+  text-transform: capitalize;
+  margin-bottom: 2px;
+}
+
+.calendar-event-doctor {
+  font-size: 1rem;
+  opacity: 0.94;
+  font-style: italic;
+  font-weight: 500;
+  margin-bottom: 1px;
+  text-transform: capitalize;
+}
+
+.calendar-event-specialty {
+  font-size: 0.96rem;
+  color: #ffe082;
+  font-weight: 500;
+  margin-bottom: 2px;
+}
+
+.calendar-event-horario {
+  font-size: 0.94rem;
+  color: #c3fdff;
+  font-weight: 500;
+}
+
+
+.calendar-event-status {
+  border-radius: 6px;
+  padding: 2px 8px;
+  display: inline-block;
+  margin-top: 4px;
+  font-size: 0.93rem;
+  font-weight: 600;
+  /* El color de fondo lo maneja inline para que cambie según el estado */
+}
+
+.modal-backdrop.show {
+  opacity: 0.2 !important; /* Menos opaco (más claro). Por defecto es 0.5 */
+}
+

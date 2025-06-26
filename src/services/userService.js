@@ -74,12 +74,13 @@ async function createCompanyAdmin({ firstName, lastNameP, lastNameM, rutAdmin, p
 /**
  * Crea perfil de usuario en "users" para metadata de la cuenta
  */
-async function createUserProfile(uid, { email, acceptTerms }, companyId) {
+async function createUserProfile(uid, { email, acceptTerms }, companyId, companyName) {
   await setDoc(doc(db, "users", uid), {
     email,
     role: "admin",
     acceptTerms,
     companyId,
+    companyName,
     createdAt: serverTimestamp()
   });
 }
@@ -113,7 +114,7 @@ export async function registerAdminWithCompany({ admin, company, account }) {
   );
 
   // 4. Perfil de usuario
-  await createUserProfile(uid, { email, acceptTerms }, companyId);
+  await createUserProfile(uid, { email, acceptTerms }, companyId, name);
 
   return { uid, companyId };
 }
@@ -121,7 +122,7 @@ export async function registerAdminWithCompany({ admin, company, account }) {
 /**
  * Registra un nuevo agente usando Cloud Function protegida
  */
-export async function registerAgent({ name, lastName, secondLastName, email, password }) {
+export async function registerAgent({ firstName, lastName, secondLastName, rut, email, password }) {
   const currentUser = auth.currentUser;
   if (!currentUser) throw new Error("No hay usuario autenticado.");
 
@@ -134,7 +135,7 @@ export async function registerAgent({ name, lastName, secondLastName, email, pas
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`
       },
-      body: JSON.stringify({ name, lastName, secondLastName, email, password })
+      body: JSON.stringify({ firstName, lastName, secondLastName, rut, email, password })
     }
   );
   const result = await response.json();

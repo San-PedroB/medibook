@@ -1,5 +1,5 @@
-// src/components/formElements/PasswordInput.jsx
 import React from 'react';
+import { Form } from 'react-bootstrap';
 import FieldError from './FieldError';
 
 export default function PasswordInput({
@@ -10,22 +10,25 @@ export default function PasswordInput({
   controlId,
   placeholder = '********',
   isInvalid = false,
-  errorMessage = ''
+  errorMessage = '',
 }) {
   return (
-    <div className='mb-3'>
-      <label htmlFor={controlId || name} className='form-label'>{label}</label>
-      <input
+    <Form.Group controlId={controlId || name} className='mb-3'>
+      {label && <Form.Label>{label}</Form.Label>}
+      <Form.Control
         type='password'
         name={name}
-        id={controlId || name}
-        className={`form-control ${isInvalid ? 'is-invalid' : ''}`}
         value={value}
         onChange={onChange}
         placeholder={placeholder}
         autoComplete='off'
+        isInvalid={isInvalid}
       />
+      {/* Helper fijo, siempre visible */}
+      <Form.Text className='text-muted d-block mb-1'>
+        8-32 caracteres. Debe contener mayúscula y número.
+      </Form.Text>
       <FieldError message={errorMessage} />
-    </div>
+    </Form.Group>
   );
 }

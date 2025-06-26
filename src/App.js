@@ -22,6 +22,7 @@ import DoctorDocument from './views/Agent/DoctorDocument';
 import AppointmentsCalendar from "./views/Agent/AppointmentsCalendar";
 import CreatePatientView from './views/Patients/CreatePatientView';
 import PatientListView from './views/Patients/PatientListView';
+import EditPatientView from './views/Patients/EditPatientView';
 
 
 // 📦 Otras vistas
@@ -60,6 +61,8 @@ function App() {
               <Route path="/appointments-calendar" element={<PrivateRoute role="agent"><AppointmentsCalendar /></PrivateRoute>} />
               <Route path="/create-patient" element={<PrivateRoute role="agent"><CreatePatientView /></PrivateRoute>} />
               <Route path="/patient-list-view" element={<PrivateRoute role="agent"><PatientListView /></PrivateRoute>} />
+              <Route path="/edit-patient-view/:patientId" element={ <PrivateRoute role="agent"> <EditPatientView /> </PrivateRoute>} />
+
 
               <Route path="/aboutus-view" element={<AboutUs />} />
               <Route path="/book-appointment" element={<PrivateRoute><BookAppointment /></PrivateRoute>} />

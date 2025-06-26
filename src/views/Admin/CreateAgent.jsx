@@ -1,3 +1,4 @@
+
 // src/views/Register.jsx
 import { auth } from "../../firebase/firebaseConfig";
 import { useState, useRef } from "react";
@@ -9,6 +10,7 @@ import NameInput from "../../components/formElements/NameInput";
 import EmailInput from "../../components/formElements/EmailInput";
 import PasswordInput from "../../components/formElements/PasswordInput";
 import AuthForm from "../../components/auth/AuthForm";
+import RutInput from "../../components/formElements/RutInput";
 
 
 // Utils y hooks
@@ -17,80 +19,92 @@ import { validateFields } from "../../utils/formUtils";
 import { passwordsMatch } from "../../utils/passwordUtils";
 import { triggerAnimation } from "../../utils/animationUtils";
 
-function CreateAgent() {
-  const name = useFormField();
+export default function CreateAgent() {
+  const firstName = useFormField();
   const lastName = useFormField();
   const secondLastName = useFormField();
   const email = useFormField();
   const password = useFormField();
   const confirmPassword = useFormField();
+  const rut = useFormField();
+
 
   const [errorMessage, setErrorMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const errorRef = useRef(null);
   const navigate = useNavigate();
 
-const handleRegister = async (e) => {
-  e.preventDefault();
+  const handleRegister = async (e) => {
+    e.preventDefault();
 
-  const fields = [name.value, lastName.value, secondLastName.value, email.value, password.value, confirmPassword.value];
+    const fields = [
+      firstName.value,
+      lastName.value,
+      secondLastName.value,
+      rut.value,
+      email.value,
+      password.value,
+      confirmPassword.value
+    ];
 
-  if (!validateFields(fields)) {
-    setErrorMessage("Complete todos los campos");
-    triggerAnimation(errorRef, "animate__headShake");
-    return;
-  }
+    if (!validateFields(fields)) {
+      setErrorMessage("Complete todos los campos");
+      triggerAnimation(errorRef, "animate__headShake");
+      return;
+    }
 
-  if (!passwordsMatch(password.value, confirmPassword.value)) {
-    setErrorMessage("Las contraseñas no coinciden");
-    triggerAnimation(errorRef, "animate__headShake");
-    password.reset();
-    confirmPassword.reset();
-    return;
-  }
+    if (!passwordsMatch(password.value, confirmPassword.value)) {
+      setErrorMessage("Las contraseñas no coinciden");
+      triggerAnimation(errorRef, "animate__headShake");
+      password.reset();
+      confirmPassword.reset();
+      return;
+    }
 
-  setIsSubmitting(true);
+    setIsSubmitting(true);
 
-  const currentUserBefore = auth.currentUser;
-  console.log("ANTES:", currentUserBefore?.uid, currentUserBefore?.email);
-try {
-  const currentUser = auth.currentUser;
+    try {
+      const currentUser = auth.currentUser;
+      if (!currentUser) {
+        setErrorMessage("Debes estar autenticado para registrar un agente.");
+        setIsSubmitting(false);
+        return;
+      }
 
-  if (!currentUser) {
-    console.log("❌ No hay usuario autenticado");
-    setErrorMessage("Debes estar autenticado para registrar un agente.");
-    return;
-  }
+      const token = await currentUser.getIdToken(true);
+      console.log("✅ Usuario autenticado:", currentUser.uid);
+      console.log("✅ Token refrescado:", token);
+      const payload = {
+        firstName: firstName.value,
+        lastName: lastName.value,
+        secondLastName: secondLastName.value,
+        rut: rut.value,
+        email: email.value,
+        password: password.value,
+      };
+      console.log("📤 Payload a enviar al backend:", payload);
+      
 
-  console.log("✅ Usuario autenticado:", currentUser.uid);
+      // Llamada al servicio con claves correctas y propagación de errores reales
+      const result = await registerAgent({
+        firstName: firstName.value,
+        lastName: lastName.value,
+        secondLastName: secondLastName.value,
+        rut: rut.value,
+        email: email.value,
+        password: password.value,
+      });
 
-  // Refresca el token explícitamente
-  const token = await currentUser.getIdToken(true);
-  console.log("✅ Token refrescado:", token);
-
-  const result = await registerAgent({
-    name: name.value,
-    lastName: lastName.value,
-    secondLastName: secondLastName.value,
-    email: email.value,
-    password: password.value,
-  });
-
-  console.log("✅ Agente registrado correctamente:", result); // <-- este es clave
-
-  setTimeout(() => {
-  navigate("/agents");
-}, 1000); 
-
-
-} catch (error) {
-  console.error("❌ Error desde frontend al registrar agente:", error); // <-- este también
-  setErrorMessage("Error al registrar agente");
-}
-
-};
-
-
+      console.log("✅ Agente registrado correctamente:", result.uid);
+      navigate("/agents");
+    } catch (error) {
+      console.error("❌ Error desde frontend al registrar agente:", error);
+      // Muestra mensaje específico del backend si existe
+      setErrorMessage(error.message || "Error al crear agente");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="container d-flex justify-content-center align-items-center" style={{ minHeight: "70vh" }}>
@@ -99,12 +113,13 @@ try {
         <AuthForm
           onSubmit={handleRegister}
           fields={[
-            <NameInput key="name" {...name} label="Nombre" />,
+            <NameInput key="firstName" {...firstName} label="Nombre" />, 
             <NameInput key="lastName" {...lastName} label="Primer apellido" />,
             <NameInput key="secondLastName" {...secondLastName} label="Segundo apellido" />,
+            <RutInput key="rut" {...rut} label="RUT" />,
             <EmailInput key="email" {...email} label="Correo electrónico" />,
             <PasswordInput key="password" {...password} label="Contraseña" />,
-            <PasswordInput key="confirm" {...confirmPassword} label="Confirmar contraseña" />,
+            <PasswordInput key="confirm" {...confirmPassword} label="Confirmar contraseña" />
           ]}
           errorMessage={errorMessage}
           isSubmitting={isSubmitting}
@@ -116,4 +131,3 @@ try {
   );
 }
 
-export default CreateAgent;

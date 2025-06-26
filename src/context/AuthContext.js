@@ -5,6 +5,17 @@ import { doc, getDoc } from "firebase/firestore";
 
 const AuthContext = createContext();
 
+// Helper para reintentar la carga de usuario de Firestore
+async function fetchUserData(uid, retries = 3, delayMs = 250) {
+  for (let i = 0; i < retries; i++) {
+    const userRef = doc(db, "users", uid);
+    const userSnap = await getDoc(userRef);
+    if (userSnap.exists()) return userSnap.data();
+    await new Promise(res => setTimeout(res, delayMs)); // Espera entre intentos
+  }
+  return null; // No encontrado tras varios intentos
+}
+
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -13,13 +24,11 @@ export function AuthProvider({ children }) {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
         try {
-          const userRef = doc(db, "users", firebaseUser.uid);
-          const userSnap = await getDoc(userRef);
-
-          if (userSnap.exists()) {
-            setUser({ uid: firebaseUser.uid, ...userSnap.data() });
+          const userData = await fetchUserData(firebaseUser.uid, 3, 250);
+          if (userData) {
+            setUser({ uid: firebaseUser.uid, ...userData });
           } else {
-            console.warn("⚠️ Usuario no encontrado en Firestore");
+            console.warn("⚠️ Usuario no encontrado en Firestore tras varios intentos");
             setUser(null);
           }
         } catch (error) {
@@ -29,7 +38,6 @@ export function AuthProvider({ children }) {
       } else {
         setUser(null);
       }
-
       setLoading(false);
     });
 

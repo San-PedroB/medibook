@@ -22,7 +22,7 @@ export default function SpecialtySelect({
         "Cuidado Dental",
         "Terapias y Rehabilitación Física",
         "Exámenes Médicos y Laboratorio",
-        "Otras Especialidades"
+        "Otras Especialidadeeees"
       ];
 
   return (

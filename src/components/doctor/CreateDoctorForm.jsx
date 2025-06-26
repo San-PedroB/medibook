@@ -3,6 +3,14 @@ import React from "react";
 import { Form, Button, Alert, Spinner } from "react-bootstrap";
 import Select from "react-select";
 
+//microcomponentes
+import NameInput from "../../components/formElements/NameInput";
+import EmailInput from "../../components/formElements/EmailInput";
+import RutInput from "../../components/formElements/RutInput";
+import ErrorMessage from "../formElements/ErrorMessage";
+
+
+
 export default function CreateDoctorForm({
   formFields,
   onSubmit,
@@ -18,52 +26,37 @@ export default function CreateDoctorForm({
   }));
 
   return (
-    <Form onSubmit={onSubmit}>
-      {errorMessage && (
-        <Alert ref={errorRef} variant="danger" className="text-center">
-          {errorMessage}
-        </Alert>
-      )}
+<Form onSubmit={onSubmit}>
+  {errorMessage && (
+    <ErrorMessage message={errorMessage} forwardedRef={errorRef} />
+  )}
+      <NameInput
+        {...formFields.firstName}
+        label="Nombre"
+        key="firstName"
+      />
+      <NameInput
+        {...formFields.paternalLastName}
+        label="Apellido Paterno"
+        key="paternalLastName"
+      />
+      <NameInput
+        {...formFields.maternalLastName}
+        label="Apellido Materno"
+        key="maternalLastName"
+      />
 
-      <Form.Group controlId="firstName" className="mb-3">
-        <Form.Label>Nombre</Form.Label>
-        <Form.Control
-          type="text"
-          placeholder="Ej: Ana"
-          value={formFields.firstName.value}
-          onChange={formFields.firstName.onChange}
-        />
-      </Form.Group>
+      <RutInput
+        {...formFields.rut}
+        label="RUT"
+        key="rut"
+      />
 
-      <Form.Group controlId="paternalLastName" className="mb-3">
-        <Form.Label>Apellido Paterno</Form.Label>
-        <Form.Control
-          type="text"
-          placeholder="Ej: González"
-          value={formFields.paternalLastName.value}
-          onChange={formFields.paternalLastName.onChange}
-        />
-      </Form.Group>
-
-      <Form.Group controlId="maternalLastName" className="mb-3">
-        <Form.Label>Apellido Materno</Form.Label>
-        <Form.Control
-          type="text"
-          placeholder="Ej: Rivas"
-          value={formFields.maternalLastName.value}
-          onChange={formFields.maternalLastName.onChange}
-        />
-      </Form.Group>
-
-      <Form.Group controlId="email" className="mb-3">
-        <Form.Label>Correo Electrónico</Form.Label>
-        <Form.Control
-          type="email"
-          placeholder="Ej: doctor@medibook.cl"
-          value={formFields.email.value}
-          onChange={formFields.email.onChange}
-        />
-      </Form.Group>
+      <EmailInput
+        {...formFields.email}
+        label="Correo Electrónico"
+        key="email"
+      />
 
       <Form.Group controlId="specialties" className="mb-3">
         <Form.Label>Especialidades</Form.Label>

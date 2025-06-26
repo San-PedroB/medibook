@@ -1,11 +1,11 @@
 import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useFormField from "../../hooks/useFormField";
-import { validateFields } from "../../utils/formUtils";
 import { triggerAnimation } from "../../utils/animationUtils";
 import { createPatient } from "../../services/patientService";
 import { useAuth } from "../../context/AuthContext";
 import CreatePatientForm from "../../components/patient/CreatePatientForm";
+import { validatePatientForm } from "../../utils/validationSchemas";
 
 export default function CreatePatientView() {
   const { user } = useAuth();
@@ -13,10 +13,12 @@ export default function CreatePatientView() {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [fieldErrors, setFieldErrors] = useState({});
 
   // Hooks para cada campo
   const firstName     = useFormField();
-  const lastName      = useFormField();
+  const lastNameP     = useFormField();
+  const lastNameM     = useFormField();
   const rut           = useFormField();
   const phone         = useFormField();
   const email         = useFormField();
@@ -26,9 +28,11 @@ export default function CreatePatientView() {
   const address       = useFormField();
   const gender        = useFormField();
 
+  // Objeto formFields para pasar a CreatePatientForm
   const formFields = {
     firstName,
-    lastName,
+    lastNameP,
+    lastNameM,
     rut,
     phone,
     email,
@@ -42,22 +46,29 @@ export default function CreatePatientView() {
   const handleRegister = async (e) => {
     e.preventDefault();
     setErrorMessage("");
+    setFieldErrors({});
 
-    const values = [
-      firstName.value,
-      lastName.value,
-      rut.value,
-      phone.value,
-      email.value,
-      birthDate.value,
-      previsionType.value,
-      nationality.value,
-      address.value,
-      gender.value
-    ];
+    // Recolecta los valores del formulario
+    const values = {
+      firstName:     firstName.value,
+      lastNameP:     lastNameP.value,
+      lastNameM:     lastNameM.value,
+      rut:           rut.value,
+      phone:         phone.value,
+      email:         email.value,
+      birthDate:     birthDate.value,
+      previsionType: previsionType.value,
+      nationality:   nationality.value,
+      address:       address.value,
+      gender:        gender.value,
+    };
 
-    if (!validateFields(values)) {
-      setErrorMessage("Complete todos los campos");
+    // Llama la validación avanzada
+    const errors = validatePatientForm(values);
+    setFieldErrors(errors);
+
+    if (Object.keys(errors).length > 0) {
+      setErrorMessage("Revisa los campos con error");
       triggerAnimation(errorRef, "animate__headShake");
       return;
     }
@@ -65,20 +76,11 @@ export default function CreatePatientView() {
     try {
       setIsSubmitting(true);
       await createPatient({
-        firstName:     firstName.value,
-        lastName:      lastName.value,
-        rut:           rut.value,
-        phone:         phone.value,
-        email:         email.value,
-        birthDate:     birthDate.value,
-        previsionType: previsionType.value,
-        nationality:   nationality.value,
-        address:       address.value,
-        gender:        gender.value,
-        companyId:     user.companyId,
-        createdBy:     user.uid
+        ...values,
+        companyId: user.companyId,
+        createdBy: user.uid
       });
-      navigate("/patient-list");
+      navigate("/patient-list-view");
     } catch (err) {
       console.error(err);
       setErrorMessage("Error al registrar paciente");
@@ -100,6 +102,7 @@ export default function CreatePatientView() {
           isSubmitting={isSubmitting}
           errorMessage={errorMessage}
           errorRef={errorRef}
+          fieldErrors={fieldErrors} // <-- pasa los errores por campo
         />
       </div>
     </div>

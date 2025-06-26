@@ -11,11 +11,13 @@ export default function CountrySelect({
   onChange = () => {},
   controlId,
   isInvalid = false,
-  errorMessage = ''
+  errorMessage = '',
+  helpText = ''
 }) {
   return (
     <Form.Group controlId={controlId || name} className='mb-3'>
       {label && <Form.Label>{label}</Form.Label>}
+
       <CountryDropdown
         value={value}
         onChange={val => onChange({ target: { name, value: val } })}
@@ -31,6 +33,15 @@ export default function CountrySelect({
           borderRadius: '.25rem'
         }}
       />
+
+      {/* Help text justo debajo del dropdown */}
+      {helpText && (
+        <Form.Text className='text-muted d-block mb-1'>
+          {helpText}
+        </Form.Text>
+      )}
+
+      {/* Mensaje de error */}
       <FieldError message={errorMessage} />
     </Form.Group>
   );

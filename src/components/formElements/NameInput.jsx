@@ -1,4 +1,3 @@
-// src/components/formElements/NameInput.jsx
 import React from 'react';
 import { Form } from 'react-bootstrap';
 import FieldError from './FieldError';
@@ -9,23 +8,34 @@ export default function NameInput({
   value = '',
   onChange = () => {},
   controlId,
+  placeholder = '',
   isInvalid = false,
   errorMessage = '',
-  placeholder = ''
+  helpText = '',
+  hasSubmitted = false,
 }) {
+  const isEmptyError = hasSubmitted && value.trim() === '';
+
+  const handleChange = (e) => {
+    const inputValue = e.target.value;
+    const filteredValue = inputValue.replace(/[0-9]/g, '');
+    onChange({ ...e, target: { ...e.target, value: filteredValue } });
+  };
+
   return (
-    <Form.Group controlId={controlId || name} className='mb-3'>
+    <Form.Group controlId={controlId || name} className="mb-3">
       {label && <Form.Label>{label}</Form.Label>}
       <Form.Control
-        type='text'
+        type="text"
         name={name}
         value={value}
-        onChange={onChange}
-        autoComplete='off'
-        placeHolder={placeholder}
-        isInvalid={isInvalid}
+        onChange={handleChange}
+        autoComplete="off"
+        placeholder={placeholder}
+        isInvalid={isInvalid || isEmptyError}
       />
-      <FieldError message={errorMessage} />
+      {helpText && <Form.Text className="text-muted d-block mb-1">{helpText}</Form.Text>}
+      <FieldError message={errorMessage || (isEmptyError ? 'Este campo es obligatorio' : '')} />
     </Form.Group>
   );
 }

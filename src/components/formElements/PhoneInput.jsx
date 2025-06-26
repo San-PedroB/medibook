@@ -1,38 +1,30 @@
-// src/components/formElements/PhoneInput.jsx
 import React from 'react';
+import { Form } from 'react-bootstrap';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/bootstrap.css';
 import FieldError from './FieldError';
 
 export default function PhoneInputField({
-  value = '',
-  onChange = () => {},
   name = 'phone',
   label = 'Teléfono',
+  value = '',
+  onChange = () => {},
   country = 'cl',
   onlyCountries = ['cl'],
   isInvalid = false,
   errorMessage = '',
   placeholder = '',
-  ...rest
 }) {
   return (
-    <div className='mb-3'>
-      {label && <label className='form-label'>{label}</label>}
+    <Form.Group controlId={name} className='mb-3'>
+      {label && <Form.Label>{label}</Form.Label>}
       <PhoneInput
         country={country}
         onlyCountries={onlyCountries}
         value={value}
         onChange={phone => onChange({ target: { name, value: phone } })}
         placeholder={placeholder}
-        inputProps={{
-          name,
-          required: true,
-          autoFocus: false,
-          ...rest
-        }}
-        // ❌ quitamos esto: masks={{ cl: '(9) XXXX XXXX' }}
-        // ❌ también evitamos enableAreaCodes
+        inputProps={{ name, required: true, autoFocus: false }}
         containerStyle={{ width: '100%' }}
         inputStyle={{
           width: '100%',
@@ -53,7 +45,11 @@ export default function PhoneInputField({
         }}
         inputClass={isInvalid ? 'is-invalid' : ''}
       />
+      {/* Helper fijo, siempre visible */}
+      <Form.Text className='text-muted d-block mb-1'>
+        Formato: 56912345678
+      </Form.Text>
       <FieldError message={errorMessage} />
-    </div>
+    </Form.Group>
   );
 }

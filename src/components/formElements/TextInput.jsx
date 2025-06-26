@@ -17,7 +17,7 @@ export default function TextInput({
   return (
     <Form.Group controlId={controlId || name} className='mb-3'>
       {label && <Form.Label>{label}</Form.Label>}
-      {helpText && <Form.Text className='text-muted d-block mb-1'>{helpText}</Form.Text>}
+
       <Form.Control
         type={type}
         name={name}
@@ -27,6 +27,14 @@ export default function TextInput({
         placeholder={placeholder}
         isInvalid={isInvalid}
       />
+
+      {/* <–– Aquí va abajo del input ––> */}
+      {helpText && (
+        <Form.Text className='text-muted d-block mb-1'>
+          {helpText}
+        </Form.Text>
+      )}
+
       <FieldError message={errorMessage} />
     </Form.Group>
   );

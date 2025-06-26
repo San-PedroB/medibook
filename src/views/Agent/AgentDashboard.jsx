@@ -72,7 +72,7 @@ function AgentDashboard() {
               <div className="d-grid gap-2">
                 <button
                   className="btn btn-primary"
-                  onClick={() => navigate("/patients")}
+                  onClick={() => navigate("/patient-list-view")}
                 >
                   Ver Pacientes
                 </button>

@@ -53,9 +53,10 @@ function Agents() {
 
   // 🧱 Columnas para react-table
   const columns = [
-    { header: "Nombre", accessorKey: "name" },
+    { header: "Nombre", accessorKey: "firstName" },
     { header: "Apellido Paterno", accessorKey: "lastName" },
     { header: "Apellido Materno", accessorKey: "secondLastName" },
+    { header: "RUT", accessorKey: "rut" },
     { header: "Correo", accessorKey: "email" },
     {
       header: "Fecha de Registro",

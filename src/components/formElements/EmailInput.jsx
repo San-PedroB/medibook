@@ -1,4 +1,3 @@
-// src/components/formElements/EmailInput.jsx
 import React from 'react';
 import { Form } from 'react-bootstrap';
 import FieldError from './FieldError';
@@ -11,7 +10,7 @@ export default function EmailInput({
   controlId,
   placeholder = 'correo@dominio.com',
   isInvalid = false,
-  errorMessage = ''
+  errorMessage = '',
 }) {
   return (
     <Form.Group controlId={controlId || name} className='mb-3'>
@@ -25,6 +24,10 @@ export default function EmailInput({
         autoComplete='off'
         isInvalid={isInvalid}
       />
+      {/* Helper fijo, siempre visible */}
+      <Form.Text className='text-muted d-block mb-1'>
+        Formato: usuario@dominio.com
+      </Form.Text>
       <FieldError message={errorMessage} />
     </Form.Group>
   );

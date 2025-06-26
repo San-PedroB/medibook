@@ -1,184 +1,156 @@
+
+// functions/src/index.js
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 const express = require("express");
 const cors = require("cors");
-const corsHandler = cors({ origin: true }); // permite cualquier origen
 
+// Inicializa Firebase Admin
 admin.initializeApp();
 
+// Configuración de Express
 const app = express();
-
-// ✅ Permite solicitudes desde cualquier origen (ajusta si quieres más seguridad)
-app.use(cors({ origin: "*" }));
+app.use(cors({ origin: true })); // Ajusta origen si es necesario
 app.use(express.json());
 
+/**
+ * Ruta: POST /
+ * Descripción: Crea un nuevo agente. Requiere token Bearer con rol 'admin'.
+ */
 app.post("/", async (req, res) => {
   console.log("📥 Solicitud recibida:", req.body);
 
+  // Verificación de token
   const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    console.log("❌ Sin token de autenticación");
+  if (!authHeader?.startsWith("Bearer ")) {
     return res.status(401).json({ error: "No autorizado" });
   }
-
   const idToken = authHeader.split("Bearer ")[1];
-  let decodedToken;
+
+  let decoded;
   try {
-    decodedToken = await admin.auth().verifyIdToken(idToken);
-    console.log("✅ Token verificado:", decodedToken.uid);
-  } catch (error) {
-    console.error("❌ Token inválido:", error);
+    decoded = await admin.auth().verifyIdToken(idToken);
+  } catch (err) {
     return res.status(401).json({ error: "Token inválido" });
   }
 
-  const requesterUid = decodedToken.uid;
-  const requesterSnap = await admin
-    .firestore()
-    .collection("users")
-    .doc(requesterUid)
-    .get();
-
+  // Verificar rol admin
+  const requesterSnap = await admin.firestore().collection("users").doc(decoded.uid).get();
   if (!requesterSnap.exists || requesterSnap.data().role !== "admin") {
-    console.log("❌ Usuario no autorizado o no es admin");
-    return res.status(403).json({ error: "No tienes permiso para realizar esta acción" });
+    return res.status(403).json({ error: "No tienes permiso" });
   }
 
-  const adminData = requesterSnap.data();
-  const { name, lastName, secondLastName, email, password } = req.body;
-
-  if (!name || !lastName || !secondLastName || !email || !password) {
+  // Desestructurar y validar campos
+  const { firstName, lastName, secondLastName, rut, email, password } = req.body;
+  if (!firstName || !lastName || !secondLastName || !rut || !email || !password) {
     return res.status(400).json({ error: "Faltan campos obligatorios" });
   }
 
 
   try {
-    // 1) Crear usuario en Auth
-    const userRecord = await admin.auth().createUser({ email, password });
+    // Crear usuario en Auth con displayName
+    const userRecord = await admin.auth().createUser({
+      email,
+      password,
+      displayName: `${firstName} ${lastName} ${secondLastName}`
+    });
 
-    // 2) Escribir doc en Firestore con companyName y adminId
-    await admin
-      .firestore()
-      .collection("users")
-      .doc(userRecord.uid)
-      .set({
-        name,
-        lastName,
-        secondLastName,
-        email,
-        role: "agent",
-        adminId: requesterUid,
-        companyId: adminData.companyId,
-        companyName: adminData.companyName,
-        createdAt: admin.firestore.FieldValue.serverTimestamp(),
-      });
+    // Guardar en Firestore
+    await admin.firestore().collection("users").doc(userRecord.uid).set({
+      firstName,
+      lastName,
+      secondLastName,
+      email,
+      rut,
+      role: "agent",
+      adminId: decoded.uid,
+      companyId: requesterSnap.data().companyId,
+      companyName: requesterSnap.data().companyName,
+      createdAt: admin.firestore.FieldValue.serverTimestamp()
+    });
 
-
-    console.log("✅ Agente creado:", userRecord.uid);
     return res.status(201).json({ success: true, uid: userRecord.uid });
   } catch (error) {
-    console.error("❌ Error al crear usuario:", error);
-    return res.status(500).json({ error: "Error al crear agente" });
+    console.error("Error al crear agente:", error);
+    return res.status(500).json({ error: error.message || "Error al crear agente" });
   }
 });
 
+/**
+ * Ruta: POST /delete
+ * Descripción: Elimina un agente por ID.
+ */
+app.post("/delete", async (req, res) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader?.startsWith("Bearer ")) {
+    return res.status(401).json({ error: "No autorizado" });
+  }
+  const idToken = authHeader.split("Bearer ")[1];
 
-//******************************************************************* */
+  let decoded;
+  try {
+    decoded = await admin.auth().verifyIdToken(idToken);
+  } catch {
+    return res.status(401).json({ error: "Token inválido" });
+  }
 
-exports.deleteAgentUserHttp = functions.https.onRequest((req, res) => {
-  corsHandler(req, res, async () => {
-    if (req.method !== "POST") {
-      return res.status(405).json({ error: "Método no permitido" });
-    }
+  const requesterSnap = await admin.firestore().collection("users").doc(decoded.uid).get();
+  if (!requesterSnap.exists || requesterSnap.data().role !== "admin") {
+    return res.status(403).json({ error: "No tienes permiso" });
+  }
 
-    const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return res.status(401).json({ error: "No autorizado" });
-    }
+  const { agentId } = req.body;
+  if (!agentId) {
+    return res.status(400).json({ error: "Falta el ID del agente" });
+  }
 
-    const idToken = authHeader.split("Bearer ")[1];
-
-    let decodedToken;
-    try {
-      decodedToken = await admin.auth().verifyIdToken(idToken);
-    } catch (error) {
-      console.error("❌ Token inválido:", error);
-      return res.status(401).json({ error: "Token inválido" });
-    }
-
-    const requesterUid = decodedToken.uid;
-    const requesterDoc = await admin.firestore().collection("users").doc(requesterUid).get();
-
-    if (!requesterDoc.exists || requesterDoc.data().role !== "admin") {
-      return res.status(403).json({ error: "No tienes permiso para esta acción" });
-    }
-
-    const { agentId } = req.body;
-
-    if (!agentId) {
-      return res.status(400).json({ error: "Falta el ID del agente" });
-    }
-
-    try {
-      // 1. Eliminar de Auth
-      await admin.auth().deleteUser(agentId);
-
-      // 2. Eliminar de Firestore
-      await admin.firestore().collection("users").doc(agentId).delete();
-
-      return res.status(200).json({ success: true, message: "Agente eliminado correctamente" });
-    } catch (error) {
-      console.error("❌ Error al eliminar agente:", error);
-      return res.status(500).json({ error: "Error al eliminar agente" });
-    }
-  });
+  try {
+    await admin.auth().deleteUser(agentId);
+    await admin.firestore().collection("users").doc(agentId).delete();
+    return res.status(200).json({ success: true });
+  } catch (error) {
+    console.error("Error al eliminar agente:", error);
+    return res.status(500).json({ error: error.message || "Error al eliminar agente" });
+  }
 });
 
+/**
+ * Ruta: POST /update-password
+ * Descripción: Actualiza la contraseña de un agente.
+ */
+app.post("/update-password", async (req, res) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader?.startsWith("Bearer ")) {
+    return res.status(401).json({ error: "No autorizado" });
+  }
+  const idToken = authHeader.split("Bearer ")[1];
 
-//******************************************************************* */
-exports.updateAgentPasswordHttp = functions.https.onRequest((req, res) => {
-  corsHandler(req, res, async () => {
-    if (req.method !== "POST") {
-      return res.status(405).json({ error: "Método no permitido" });
-    }
+  let decoded;
+  try {
+    decoded = await admin.auth().verifyIdToken(idToken);
+  } catch {
+    return res.status(401).json({ error: "Token inválido" });
+  }
 
-    const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return res.status(401).json({ error: "No autorizado" });
-    }
+  const requesterSnap = await admin.firestore().collection("users").doc(decoded.uid).get();
+  if (!requesterSnap.exists || requesterSnap.data().role !== "admin") {
+    return res.status(403).json({ error: "No tienes permiso" });
+  }
 
-    const idToken = authHeader.split("Bearer ")[1];
+  const { agentId, newPassword } = req.body;
+  if (!agentId || !newPassword) {
+    return res.status(400).json({ error: "Faltan datos obligatorios" });
+  }
 
-    let decodedToken;
-    try {
-      decodedToken = await admin.auth().verifyIdToken(idToken);
-    } catch (error) {
-      console.error("❌ Token inválido:", error);
-      return res.status(401).json({ error: "Token inválido" });
-    }
-
-    const requesterUid = decodedToken.uid;
-    const requesterDoc = await admin.firestore().collection("users").doc(requesterUid).get();
-
-    if (!requesterDoc.exists || requesterDoc.data().role !== "admin") {
-      return res.status(403).json({ error: "No tienes permiso para esta acción" });
-    }
-
-    const { agentId, newPassword } = req.body;
-
-    if (!agentId || !newPassword) {
-      return res.status(400).json({ error: "Faltan datos obligatorios" });
-    }
-
-    try {
-      await admin.auth().updateUser(agentId, { password: newPassword });
-      return res.status(200).json({ success: true });
-    } catch (error) {
-      console.error("❌ Error al actualizar contraseña del agente:", error);
-      return res.status(500).json({ error: "Error al actualizar la contraseña" });
-    }
-  });
+  try {
+    await admin.auth().updateUser(agentId, { password: newPassword });
+    return res.status(200).json({ success: true });
+  } catch (error) {
+    console.error("Error al actualizar contraseña:", error);
+    return res.status(500).json({ error: error.message || "Error al actualizar contraseña" });
+  }
 });
 
-
-// Exportar como función HTTP
+// Exporta la app de Express como función HTTPS
 exports.createAgentUserHttp = functions.https.onRequest(app);
+
