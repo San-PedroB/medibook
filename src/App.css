@@ -1,0 +1,306 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* estilos agregados por daniel  */
+.logo-img {
+  width: 130px;
+  height: auto;
+  border: 2px solid #129ae8;
+}
+
+.navbar .dropdown:hover .dropdown-menu {
+  display: block;
+  margin-top: 0;
+}
+
+/* Color de fondo y texto al pasar el mouse por las opciones del dropdown */
+.dropdown-menu .dropdown-item:hover,
+.dropdown-menu .dropdown-item:focus {
+  background-color: #129ae8; 
+  color: white !important;   
+}
+
+
+/* Estilos para el Documento Respaldo Médico */
+.formulario-pdf {  /*contenedor con fondo blanco, texto negro*/
+  padding: 20px;
+  background-color: #fff;
+  color: #000;
+  max-width: 800px;
+  margin: 0 auto;
+  font-size: 14px;
+}
+
+.center {
+  text-align: center;
+}
+
+.document-container { /* centra el fondo blanca junto con el contenido */
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.document-a4 {  /** Da el tamaño de una hoja A4 en pixeles */
+  width: 794px; /* A4 ancho in pixels */
+  min-height: 1123px; /* A4 largo en pixels*/
+  padding: 40px;
+  background: white;
+  border: 1px solid #ccc;
+  color: #222;
+  line-height: 1.6;
+}
+
+.center {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+ul {
+  margin-left: 20px;
+  padding-left: 0;
+}
+
+ul li {
+  margin-bottom: 6px;
+}
+
+.firma-section {  /* espacio arriba y abajo para componente de firma */
+  margin-top: 40px;
+  margin-bottom: 20px;
+}
+
+.footer {
+  text-align: right;
+  font-size: 0.9rem;
+  margin-top: 40px;
+  color: #777;
+}
+
+.btn-descargar {
+  margin-top: 20px;
+  padding: 15px 100px;
+  font-weight: bold;
+  background-color: red;
+  border: none;
+  color: white;
+  border-radius: 5px;
+}
+
+.header-doc {
+  display: flex;
+  justify-content: space-between; /* Logo a un lado, título al otro */
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.title-doc {
+  flex: 1;
+  text-align: center;
+  font-size: 24px;
+  margin: 0;
+  padding-right: 120px; /* Para compensar el ancho del logo y centrar el título visualmente */
+}
+
+.logo-doc {
+  width: 130px;
+  height: auto;
+  border: 2px solid black;
+}
+
+/*SOBRE NOSOTROS*/
+
+.about-us-page img {
+  max-width: 100%;
+  border-radius: 8px;
+}
+
+.about-us-page h1, .about-us-page h2 {
+  color: #ffffff;
+}
+
+.about-us-page ul {
+  padding-left: 1rem;
+}
+
+
+.calendar-event-content {
+  background: #1976d2;
+  color: #fff;
+  border-radius: 10px;
+  padding: 12px 8px 10px 8px;
+  min-height: 54px;
+  min-width: 120px;
+  box-shadow: 0 2px 12px #0002;
+  display: flex;
+  flex-direction: column;
+  align-items: center;       /* CENTRA HORIZONTAL */
+  justify-content: center;   /* CENTRA VERTICAL */
+  text-align: center;        /* TEXTO AL CENTRO */
+  white-space: normal;
+  overflow: hidden;
+  gap: 2px;
+}
+
+.calendar-event-patient {
+  font-weight: bold;
+  font-size: 1.15rem;
+  line-height: 1.08;
+  text-transform: capitalize;
+  margin-bottom: 2px;
+}
+
+.calendar-event-doctor {
+  font-size: 1rem;
+  opacity: 0.94;
+  font-style: italic;
+  font-weight: 500;
+  margin-bottom: 1px;
+}
+
+.calendar-event-specialty {
+  font-size: 0.92rem;
+  color: #ffe082;
+  margin-top: 0;
+  font-weight: 500;
+  font-style: normal;
+  line-height: 1.1;
+}
+
+.calendar-event-content:hover {
+  background: #1253a4;
+  box-shadow: 0 4px 16px #0003;
+  cursor: pointer;
+}
+
+.calendar-event-horario {
+  font-size: 0.94rem;
+  color: #c3fdff;
+  margin-top: 4px;
+  font-weight: 500;
+  font-style: normal;
+  line-height: 1.1;
+}
+
+.calendar-event-patient {
+  font-weight: bold;
+  font-size: 1.15rem;
+  line-height: 1.08;
+  text-transform: capitalize;
+  margin-bottom: 2px;
+}
+
+.calendar-event-doctor {
+  font-size: 1rem;
+  opacity: 0.94;
+  font-style: italic;
+  font-weight: 500;
+  margin-bottom: 1px;
+  text-transform: capitalize;
+}
+
+.calendar-event-specialty {
+  font-size: 0.96rem;
+  color: #ffe082;
+  font-weight: 500;
+  margin-bottom: 2px;
+}
+
+.calendar-event-horario {
+  font-size: 0.94rem;
+  color: #c3fdff;
+  font-weight: 500;
+}
+
+
+.calendar-event-status {
+  border-radius: 6px;
+  padding: 2px 8px;
+  display: inline-block;
+  margin-top: 4px;
+  font-size: 0.93rem;
+  font-weight: 600;
+  /* El color de fondo lo maneja inline para que cambie según el estado */
+}
+
+.modal-backdrop.show {
+  opacity: 0.2 !important; /* Menos opaco (más claro). Por defecto es 0.5 */
+}
+
