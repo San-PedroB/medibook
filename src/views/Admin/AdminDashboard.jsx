@@ -43,8 +43,7 @@ export default function AdminDashboard() {
 
   const cards = [
     {
-      icon: <FaUsers size={32} className="text-success mb-2" />,
-      title: "Agentes",
+      icon: <FaUsers size={32} className="text-success mb-2" />,      title: "Agentes",
       desc: "Gestiona tus agentes y asigna roles.",
       buttons: [
         { text: "Crear Agente", variant: "outline-primary", onClick: () => navigate("/create-agent") },
@@ -78,53 +77,52 @@ export default function AdminDashboard() {
     },
   ];
 
-return (
-  <div>
-    {/* Header reutilizable (animación interna en DashboardHeader) */}
-    <DashboardHeader
-      greeting="Bienvenido"
-      name={adminData.name}
-      subText="Panel de administración de:"
-      companyName={adminData.companyName}
-    />
+  return (
+    <div className="container-fluid px-4">
+      {/* Header reutilizable (animación interna en DashboardHeader) */}
+      <DashboardHeader
+        greeting="Bienvenido"
+        name={adminData.name}
+        subText="Panel de administración de:"
+        companyName={adminData.companyName}
+      />
 
-    {/* Responsive grid con Bootstrap */}
-    <div className="row mt-4">
-      {cards.map((card, index) => (
-        <div
-          className="col-12 col-md-6 col-xl-3 mb-4 d-flex"
-          key={index}
-        >
-          <motion.div
-            className="card shadow-sm border-0 rounded-4 w-100 h-100"
-            variants={cardVariants}
-            initial="hidden"
-            animate="visible"
-            transition={{ delay: index * 0.2 }}
+      {/* Responsive grid con Bootstrap */}
+      <div className="row mt-4">
+        {cards.map((card, index) => (
+          <div
+            className="col-12 col-md-6 col-xl-3 mb-4 d-flex"
+            key={index}
           >
-            <div className="card-body text-center d-flex flex-column justify-content-between h-100">
-              <div>
-                {card.icon}
-                <h5 className="card-title fw-semibold mt-2">{card.title}</h5>
-                <p className="text-muted small">{card.desc}</p>
+            <motion.div
+              className="card shadow-sm border-0 rounded-4 w-100 h-100"
+              variants={cardVariants}
+              initial="hidden"
+              animate="visible"
+              transition={{ delay: index * 0.2 }}
+            >
+              <div className="card-body text-center d-flex flex-column justify-content-between h-100">
+                <div>
+                  {card.icon}
+                  <h5 className="card-title fw-semibold mt-2">{card.title}</h5>
+                  <p className="text-muted small">{card.desc}</p>
+                </div>
+                <div className="d-grid gap-2 mt-3">
+                  {card.buttons.map((btn, i) => (
+                    <button
+                      key={i}
+                      className={`btn btn-${btn.variant}`}
+                      onClick={btn.onClick}
+                    >
+                      {btn.text}
+                    </button>
+                  ))}
+                </div>
               </div>
-              <div className="d-grid gap-2 mt-3">
-                {card.buttons.map((btn, i) => (
-                  <button
-                    key={i}
-                    className={`btn btn-${btn.variant}`}
-                    onClick={btn.onClick}
-                  >
-                    {btn.text}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      ))}
+            </motion.div>
+          </div>
+        ))}
+      </div>
     </div>
-  </div>
-);
-
+  );
 }

@@ -10,6 +10,7 @@ import Loader from "./components/Loader";
 import AnimatedBackground from './components/animatedbackground/AnimatedBackground';
 import { useEffect, useState } from "react";
 
+
 //  Vistas públicas
 import Login from './views/Auth/Login';
 import UserRegister from './views/Auth/UserRegister';
@@ -44,6 +45,7 @@ import AppointmentMenu from './views/Agent/appointmentMenu';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import '../src/styles/themes.css';
 
 function AppRoutesWithLoader() {
   const location = useLocation();
@@ -79,33 +81,12 @@ function AppRoutesWithLoader() {
         <Route path="/edit-doctor/:doctorId" element={<PrivateRoute role="admin"><AdminLayout><EditDoctor /></AdminLayout></PrivateRoute>} />
         <Route path="/edit-agent/:agentId" element={<PrivateRoute role="admin"><AdminLayout><EditAgent /></AdminLayout></PrivateRoute>} />
         <Route path="/edit-agent/:agentId" element={<PrivateRoute role="admin"><AdminLayout><EditAgent /></AdminLayout></PrivateRoute>} />
-<Route
-  path="/admin-appointments"
-  element={
-    <PrivateRoute role="admin">
-      <AdminLayout>
-        <AdminAppointments />
-      </AdminLayout>
-    </PrivateRoute>
-  }
-/>
-
-        
-
+        <Route path="/admin-appointments" element={<PrivateRoute role="admin"><AdminLayout><AdminAppointments /></AdminLayout></PrivateRoute>} />
 
 
         {/* Agente */}
         <Route path="/agent-dashboard" element={<PrivateRoute role="agent"><AgentLayout><AgentDashboard /></AgentLayout></PrivateRoute>} />
-        <Route
-  path="/appointments-calendar"
-  element={
-    <PrivateRoute role="agent">
-      <AgentLayout>
-        <AppointmentsCalendar />
-      </AgentLayout>
-    </PrivateRoute>
-  }
-/>
+        <Route path="/appointments-calendar" element={<PrivateRoute role="agent"><AgentLayout><AppointmentsCalendar /></AgentLayout></PrivateRoute>}/>
         <Route path="/create-patient" element={<PrivateRoute role="agent"><AgentLayout><CreatePatientView /></AgentLayout></PrivateRoute>} />
         <Route path="/patient-list-view" element={<PrivateRoute role="agent"><AgentLayout><PatientListView /></AgentLayout></PrivateRoute>} />
         <Route path="/edit-patient-view/:patientId" element={<PrivateRoute role="agent"><AgentLayout><EditPatientView /></AgentLayout></PrivateRoute>} />

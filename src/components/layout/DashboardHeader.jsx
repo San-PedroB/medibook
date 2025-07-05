@@ -8,19 +8,6 @@ const headerVariants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
 };
 
-/**
- * DashboardHeader es un componente genérico que puede mostrar:
- * - Un título fijo (title) o el greeting + name.
- * - Un subtítulo fijo (subtitle) o el subText + companyName.
- *
- * Props:
- * - title?: string
- * - subtitle?: string
- * - greeting?: string (por defecto "Bienvenido")
- * - name?: string
- * - subText?: string (por defecto "Panel de administración de:")
- * - companyName?: string
- */
 export default function DashboardHeader({
   title,
   subtitle,
@@ -31,7 +18,7 @@ export default function DashboardHeader({
 }) {
   return (
     <motion.div
-      className="bg-primary text-white p-4 rounded-4 shadow-sm mb-5 mt-4 text-center"
+      className="container-fluid px-4 bg-primary text-white p-4 rounded-4 shadow-sm mb-5 mt-4 text-center"
       variants={headerVariants}
       initial="hidden"
       animate="visible"
@@ -39,7 +26,7 @@ export default function DashboardHeader({
       <h2 className="mb-2">
         {title ?? (
           <>
-            {greeting},{" "}
+            {greeting}, {" "}
             <span className="text-primary fw-semibold">{name}</span>
           </>
         )}
