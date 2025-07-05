@@ -4,7 +4,6 @@ import { triggerAnimation } from "../../utils/animationUtils";
 import { createPatient } from "../../services/patientService";
 import { useAuth } from "../../context/AuthContext";
 import PatientForm from "../../components/patient/PatientForm"; // <--- Cambiado aquí
-// ¡Ya NO necesitas useFormField ni validatePatientForm acá!
 
 export default function CreatePatientView() {
   const { user } = useAuth();
