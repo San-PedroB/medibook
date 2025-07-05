@@ -31,7 +31,7 @@ export default function DashboardHeader({
 }) {
   return (
     <motion.div
-      className="bg-primary text-white p-4 rounded-4 shadow-sm mb-5 text-center"
+      className="bg-primary text-white p-4 rounded-4 shadow-sm mb-5 mt-4 text-center"
       variants={headerVariants}
       initial="hidden"
       animate="visible"

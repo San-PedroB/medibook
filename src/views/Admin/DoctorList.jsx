@@ -4,7 +4,7 @@ import { getDoctorsByCompanyId, deleteDoctor } from "../../services/doctorServic
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { Button, Form } from "react-bootstrap";
-
+import ModalConfirm from "../../components/ModalConfirm"; // 👈 Importación correcta
 
 const columns = [
   { header: "Nombre", accessor: "firstName" },
@@ -37,6 +37,11 @@ export default function DoctorList() {
   const [filter, setFilter] = useState("");
   const [msg, setMsg] = useState({ type: "", text: "" });
 
+  // Modal de confirmación
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [selectedDoctor, setSelectedDoctor] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+
   // 1️⃣ Carga inicial
   useEffect(() => {
     if (!user?.companyId) return;
@@ -55,14 +60,26 @@ export default function DoctorList() {
     navigate(`/edit-doctor/${doctor.id}`);
   };
 
-  const handleDelete = async (doctor) => {
-    if (!window.confirm("¿Estás seguro de eliminar este doctor?")) return;
+  // NUEVO: abrir modal de confirmación
+  const handleAskDelete = (doctor) => {
+    setSelectedDoctor(doctor);
+    setShowConfirm(true);
+  };
+
+  // NUEVO: ejecutar eliminación si confirman
+  const handleConfirmDelete = async () => {
+    if (!selectedDoctor) return;
+    setIsLoading(true);
     try {
-      await deleteDoctor(doctor.id);
-      setMsg({ type: "success", text: "Doctor eliminado" });
-      setDoctors((prev) => prev.filter((d) => d.id !== doctor.id));
+      await deleteDoctor(selectedDoctor.id);
+      setMsg({ type: "success", text: "Médico eliminado" });
+      setDoctors((prev) => prev.filter((d) => d.id !== selectedDoctor.id));
     } catch {
-      setMsg({ type: "danger", text: "Error al eliminar doctor" });
+      setMsg({ type: "danger", text: "Error al eliminar médico" });
+    } finally {
+      setIsLoading(false);
+      setShowConfirm(false);
+      setSelectedDoctor(null);
     }
   };
 
@@ -98,8 +115,29 @@ export default function DoctorList() {
         globalFilter={filter}
         onGlobalFilterChange={setFilter}
         onStartEdit={handleEdit}
-        onDelete={handleDelete}
+        // Cambiado: usar el nuevo handler para confirmar borrado
+        onDelete={handleAskDelete}
         rowKey="id"
+      />
+
+      {/* ModalConfirm para eliminar médico */}
+      <ModalConfirm
+        show={showConfirm}
+        title="Eliminar médico"
+        message={
+          selectedDoctor
+            ? `¿Estás seguro de eliminar al médico "${selectedDoctor.firstName} ${selectedDoctor.paternalLastName}"? Esta acción no se puede deshacer.`
+            : "¿Estás seguro de eliminar este médico? Esta acción no se puede deshacer."
+        }
+        confirmText="Eliminar"
+        cancelText="Cancelar"
+        onConfirm={handleConfirmDelete}
+        onCancel={() => {
+          setShowConfirm(false);
+          setSelectedDoctor(null);
+        }}
+        confirmVariant="danger"
+        isLoading={isLoading}
       />
     </div>
   );

@@ -27,6 +27,8 @@ import DoctorMenu from './views/Admin/DoctorMenu';
 import AgentMenu from './views/Admin/AgentMenu';
 import EditAgent from './views/Admin/EditAgent';
 import EditDoctor from './views/Admin/EditDoctor';
+import AdminAppointments from './views/Admin/AdminAppointments';
+
 
 //  Vistas Agente
 import AgentDashboard from './views/Agent/AgentDashboard';
@@ -76,10 +78,34 @@ function AppRoutesWithLoader() {
         <Route path="/agent-menu" element={<PrivateRoute role="admin"><AdminLayout><AgentMenu /></AdminLayout></PrivateRoute>} />
         <Route path="/edit-doctor/:doctorId" element={<PrivateRoute role="admin"><AdminLayout><EditDoctor /></AdminLayout></PrivateRoute>} />
         <Route path="/edit-agent/:agentId" element={<PrivateRoute role="admin"><AdminLayout><EditAgent /></AdminLayout></PrivateRoute>} />
+        <Route path="/edit-agent/:agentId" element={<PrivateRoute role="admin"><AdminLayout><EditAgent /></AdminLayout></PrivateRoute>} />
+<Route
+  path="/admin-appointments"
+  element={
+    <PrivateRoute role="admin">
+      <AdminLayout>
+        <AdminAppointments />
+      </AdminLayout>
+    </PrivateRoute>
+  }
+/>
+
+        
+
+
 
         {/* Agente */}
         <Route path="/agent-dashboard" element={<PrivateRoute role="agent"><AgentLayout><AgentDashboard /></AgentLayout></PrivateRoute>} />
-        <Route path="/appointments-calendar" element={<PrivateRoute role="agent"><AgentLayout><AppointmentsCalendar /></AgentLayout></PrivateRoute>} />
+        <Route
+  path="/appointments-calendar"
+  element={
+    <PrivateRoute role="agent">
+      <AgentLayout>
+        <AppointmentsCalendar />
+      </AgentLayout>
+    </PrivateRoute>
+  }
+/>
         <Route path="/create-patient" element={<PrivateRoute role="agent"><AgentLayout><CreatePatientView /></AgentLayout></PrivateRoute>} />
         <Route path="/patient-list-view" element={<PrivateRoute role="agent"><AgentLayout><PatientListView /></AgentLayout></PrivateRoute>} />
         <Route path="/edit-patient-view/:patientId" element={<PrivateRoute role="agent"><AgentLayout><EditPatientView /></AgentLayout></PrivateRoute>} />

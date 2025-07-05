@@ -39,7 +39,7 @@ function AgentDashboard() {
   };
 
   return (
-    <div className="container py-5">
+    <div>
       {/* Encabezado animado */}
       <motion.div
         className="bg-primary text-white p-4 rounded-4 shadow-sm mb-5 text-center"

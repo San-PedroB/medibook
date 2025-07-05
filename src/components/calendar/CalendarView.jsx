@@ -8,7 +8,7 @@ import CreateAppointmentModal from './CreateAppointmentModal';
 import AppointmentDetailModal from '../appointments/AppointmentDetailModal';
 import { useAuth } from "../../context/AuthContext";
 
-export default function CalendarView() {
+export default function CalendarView({ userRole }) {
   const [events, setEvents] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
@@ -27,7 +27,10 @@ export default function CalendarView() {
   };
 
   const handleDateClick = (info) => {
-    setSelectedDate(info.dateStr);
+    // Solo permitir crear cita si el rol está permitido
+    if (!["admin", "agent"].includes(userRole)) return;
+
+    setSelectedDate(info.date);
     setShowModal(true);
   };
 
@@ -47,31 +50,23 @@ export default function CalendarView() {
   };
 
   function renderEventContent(eventInfo) {
-    // Paciente completo
+    // ... (tu función renderEventContent completa, sin cambios)
     const patient = eventInfo.event.extendedProps.patientName || "Paciente";
-
-    // Extraer nombre y primer apellido del médico
     const doctorRaw = eventInfo.event.extendedProps.doctorName || "Médico";
     const doctorParts = doctorRaw.trim().split(' ');
     const doctorDisplay = doctorParts.length >= 2
       ? `${doctorParts[0]} ${doctorParts[1]}`
       : doctorParts[0];
-
-    // Especialidad
     const specialtiesRaw = eventInfo.event.extendedProps.specialties;
     const specialty = Array.isArray(specialtiesRaw)
       ? specialtiesRaw.join(" / ") || "Especialidad"
       : specialtiesRaw || "Especialidad";
-
-    // Horario
     const start = new Date(eventInfo.event.start);
     const end = new Date(eventInfo.event.end);
     const pad = num => String(num).padStart(2, "0");
     const startTime = `${pad(start.getHours())}:${pad(start.getMinutes())}`;
     const endTime = `${pad(end.getHours())}:${pad(end.getMinutes())}`;
     const horario = `${startTime} a ${endTime}`;
-
-    // Estado
     const status = eventInfo.event.extendedProps.status || "Agendada";
     const statusColors = {
       Agendada: "#7986cb",

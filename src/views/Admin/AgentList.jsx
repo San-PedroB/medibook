@@ -7,6 +7,7 @@ import {
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { Button, Form } from "react-bootstrap";
+import ModalConfirm from "../../components/ModalConfirm"; 
 
 const columns = [
   { header: "Nombre", accessor: "firstName" },
@@ -22,6 +23,11 @@ export default function Agents() {
   const [agents, setAgents] = useState([]);
   const [filter, setFilter] = useState("");
   const [msg, setMsg] = useState({ type: "", text: "" });
+
+  // Nuevo: estados para el modal de confirmación
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [selectedAgent, setSelectedAgent] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Carga inicial
   useEffect(() => {
@@ -40,14 +46,26 @@ export default function Agents() {
     navigate(`/edit-agent/${agent.id}`);
   };
 
-  const doDelete = async (agent) => {
-    if (!window.confirm("¿Eliminar este agente?")) return;
+  // NUEVO: Solicita confirmación antes de eliminar
+  const handleAskDelete = (agent) => {
+    setSelectedAgent(agent);
+    setShowConfirm(true);
+  };
+
+  // NUEVO: Ejecuta la eliminación solo si el usuario confirma
+  const handleConfirmDelete = async () => {
+    if (!selectedAgent) return;
+    setIsLoading(true);
     try {
-      await deleteAgentById(agent.id);
+      await deleteAgentById(selectedAgent.id);
       setMsg({ type: "success", text: "Agente eliminado" });
-      setAgents((prev) => prev.filter((a) => a.id !== agent.id));
+      setAgents((prev) => prev.filter((a) => a.id !== selectedAgent.id));
     } catch {
       setMsg({ type: "danger", text: "Error al eliminar agente" });
+    } finally {
+      setIsLoading(false);
+      setShowConfirm(false);
+      setSelectedAgent(null);
     }
   };
 
@@ -83,8 +101,29 @@ export default function Agents() {
         globalFilter={filter}
         onGlobalFilterChange={setFilter}
         onStartEdit={handleEdit}
-        onDelete={doDelete}
+        // Cambia onDelete para abrir el modal, no eliminar directo
+        onDelete={handleAskDelete}
         rowKey="id"
+      />
+
+      {/* ModalConfirm de eliminación */}
+      <ModalConfirm
+        show={showConfirm}
+        title="Eliminar agente"
+        message={
+          selectedAgent
+            ? `¿Estás seguro de eliminar al agente "${selectedAgent.firstName} ${selectedAgent.lastName}"? Esta acción no se puede deshacer.`
+            : "¿Estás seguro de eliminar este agente? Esta acción no se puede deshacer."
+        }
+        confirmText="Eliminar"
+        cancelText="Cancelar"
+        onConfirm={handleConfirmDelete}
+        onCancel={() => {
+          setShowConfirm(false);
+          setSelectedAgent(null);
+        }}
+        confirmVariant="danger"
+        isLoading={isLoading}
       />
     </div>
   );

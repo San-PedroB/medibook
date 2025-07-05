@@ -1,4 +1,3 @@
-// src/views/Admin/ManageSpecialties.jsx
 import React, { useEffect, useState } from "react";
 import { Button, Form, Table, Alert, InputGroup } from "react-bootstrap";
 import { useAuth } from "../../context/AuthContext";
@@ -9,6 +8,7 @@ import {
   updateSpecialty,
 } from "../../services/specialtyService";
 import DashboardHeader from "../../components/layout/DashboardHeader";
+import ModalConfirm from "../../components/ModalConfirm"; // ✅ Import
 
 const ManageSpecialties = () => {
   const { user } = useAuth();
@@ -18,6 +18,11 @@ const ManageSpecialties = () => {
   const [success, setSuccess] = useState("");
   const [editingId, setEditingId] = useState(null);
   const [editName, setEditName] = useState("");
+
+  // Estados para ModalConfirm
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [specialtyToDelete, setSpecialtyToDelete] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const loadSpecialties = async () => {
     try {
@@ -47,14 +52,29 @@ const ManageSpecialties = () => {
     }
   };
 
-  const handleDelete = async (id) => {
+  // Nuevo: Solicita confirmación antes de eliminar
+  const handleAskDelete = (spec) => {
+    setSpecialtyToDelete(spec);
+    setShowConfirm(true);
+  };
+
+  // Nuevo: Elimina si confirman en el modal
+  const handleConfirmDelete = async () => {
+    if (!specialtyToDelete) return;
+    setIsLoading(true);
+    setError("");
+    setSuccess("");
     try {
-      await deleteSpecialty(id);
+      await deleteSpecialty(specialtyToDelete.id);
       setSuccess("Especialidad eliminada");
       loadSpecialties();
     } catch (err) {
       console.error(err);
       setError("Error al eliminar especialidad");
+    } finally {
+      setIsLoading(false);
+      setShowConfirm(false);
+      setSpecialtyToDelete(null);
     }
   };
 
@@ -147,7 +167,8 @@ const ManageSpecialties = () => {
                       <Button
                         variant="danger"
                         size="sm"
-                        onClick={() => handleDelete(spec.id)}
+                        onClick={() => handleAskDelete(spec)}
+                        disabled={isLoading && specialtyToDelete?.id === spec.id}
                       >
                         Eliminar
                       </Button>
@@ -175,6 +196,26 @@ const ManageSpecialties = () => {
           </Button>
         </Form>
       </div>
+
+      {/* ModalConfirm para eliminar especialidad */}
+      <ModalConfirm
+        show={showConfirm}
+        title="Eliminar especialidad"
+        message={
+          specialtyToDelete
+            ? `¿Estás seguro de eliminar la especialidad "${specialtyToDelete.name}"? Esta acción no se puede deshacer.`
+            : "¿Estás seguro de eliminar esta especialidad? Esta acción no se puede deshacer."
+        }
+        confirmText="Eliminar"
+        cancelText="Cancelar"
+        onConfirm={handleConfirmDelete}
+        onCancel={() => {
+          setShowConfirm(false);
+          setSpecialtyToDelete(null);
+        }}
+        confirmVariant="danger"
+        isLoading={isLoading}
+      />
     </>
   );
 };

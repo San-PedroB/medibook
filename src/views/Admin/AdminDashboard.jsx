@@ -73,13 +73,13 @@ export default function AdminDashboard() {
       title: "Calendario de Citas",
       desc: "Administra las citas agendadas.",
       buttons: [
-        { text: "Ver Citas", variant: "outline-primary", onClick: () => navigate("/appointments-calendar") },
+        { text: "Ver Citas", variant: "outline-primary", onClick: () => navigate("/admin-appointments") },
       ],
     },
   ];
 
 return (
-  <div className="container py-5">
+  <div>
     {/* Header reutilizable (animación interna en DashboardHeader) */}
     <DashboardHeader
       greeting="Bienvenido"

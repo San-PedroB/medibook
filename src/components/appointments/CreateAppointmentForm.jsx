@@ -8,6 +8,14 @@ import { getPatientsByCompany } from "../../services/patientService";
 import { getDoctorsByCompanyId } from "../../services/doctorService";
 import { useAuth } from "../../context/AuthContext";
 
+// Función robusta para fechas
+function safeDate(dateLike, hour = 9, minute = 0) {
+  let base = dateLike ? new Date(dateLike) : new Date();
+  if (isNaN(base)) base = new Date();
+  base.setHours(hour, minute, 0, 0);
+  return base;
+}
+
 export default function CreateAppointmentForm({
   initialDate,
   onSubmit,
@@ -20,14 +28,14 @@ export default function CreateAppointmentForm({
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
 
-  // Maneja las fechas como objetos Date
+  // Inicializa SIEMPRE con fechas válidas
   const [form, setForm] = useState({
     patientId: "",
     patientName: "",
     doctorId: "",
     doctorName: "",
-    start: initialDate ? new Date(initialDate + "T09:00") : new Date(),
-    end: initialDate ? new Date(initialDate + "T09:30") : new Date(),
+    start: safeDate(initialDate, 9, 0),
+    end: safeDate(initialDate, 9, 30),
     notes: "",
     status: "vigente",
   });
@@ -46,13 +54,13 @@ export default function CreateAppointmentForm({
   }, [user]);
 
   useEffect(() => {
-    if (initialDate) {
-      setForm((f) => ({
-        ...f,
-        start: new Date(initialDate + "T09:00"),
-        end: new Date(initialDate + "T09:30"),
-      }));
-    }
+    // Cuando cambia initialDate, actualiza las fechas
+    setForm((f) => ({
+      ...f,
+      start: safeDate(initialDate, 9, 0),
+      end: safeDate(initialDate, 9, 30),
+    }));
+    // Si initialDate es undefined, safeDate igual protege
   }, [initialDate]);
 
   useEffect(() => {
@@ -189,13 +197,13 @@ export default function CreateAppointmentForm({
           />
         </div>
         <div className="col">
-        <DateTimePicker
-          label="Termino"
-          value={form.end}
-          onChange={date => setForm(f => ({ ...f, end: date }))}
-          required
-          showTime={true}
-        />
+          <DateTimePicker
+            label="Termino"
+            value={form.end}
+            onChange={date => setForm(f => ({ ...f, end: date }))}
+            required
+            showTime={true}
+          />
         </div>
       </div>
 

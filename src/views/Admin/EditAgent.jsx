@@ -50,7 +50,7 @@ export default function EditAgent() {
         companyId: user.companyId
       });
       setSuccessMessage("Agente actualizado correctamente.");
-      setTimeout(() => navigate("/agents"), 1200);
+      setTimeout(() => navigate("/agent-list"), 1200);
     } catch (error) {
       setErrorMessage(error.message || "Error al actualizar agente.");
       triggerAnimation(errorRef, "animate__headShake");
