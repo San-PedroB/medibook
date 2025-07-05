@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
+import { FaHome, FaCalendarAlt, FaUser, FaSignOutAlt, FaBars } from "react-icons/fa";
 import { logoutUser } from "../../services/userService";
 import { useAuth } from "../../context/AuthContext";
+import "./StyleSidebar.css";
 
 export default function AgentSidebar() {
+  const [show, setShow] = useState(false);
   const navigate = useNavigate();
   const { user } = useAuth();
   const agentName = user ? `${user.firstName || ""} ${user.lastName || ""}`.trim() : "Agente";
@@ -14,63 +17,73 @@ export default function AgentSidebar() {
     navigate("/login");
   };
 
+  // Bloque usuario arriba (nombre arriba, rol abajo)
+const userBlock = (
+  <div className="text-center mb-4 mt-4">
+    <h5 style={{ wordBreak: "break-word" }}>
+      {agentName || "Agente"}
+    </h5>
+    <small className="text-info d-block">Agente</small>
+    <hr className="text-white" />
+  </div>
+);
+
+
+
+  function SidebarLinks({ onNav }) {
+    return (
+      <>
+        <NavLink to="/agent-dashboard" className={({ isActive }) => isActive ? "sidebar-link active" : "sidebar-link"} onClick={onNav}>
+          <FaHome className="me-2" /> Dashboard
+        </NavLink>
+        <NavLink to="/appointment-menu" className={({ isActive }) => isActive ? "sidebar-link active" : "sidebar-link"} onClick={onNav}>
+          <FaCalendarAlt className="me-2" /> Citas
+        </NavLink>
+        <NavLink to="/patient-menu" className={({ isActive }) => isActive ? "sidebar-link active" : "sidebar-link"} onClick={onNav}>
+          <FaUser className="me-2" /> Pacientes
+        </NavLink>
+        <hr className="text-white" />
+        <a href="#" onClick={handleLogout} className="sidebar-link text-danger">
+          <FaSignOutAlt className="me-2" /> Cerrar sesión
+        </a>
+      </>
+    );
+  }
+
+  const handleNav = () => setShow(false);
+
   return (
-    <nav className="sidebar">
-      <div className="text-center mb-4">
-        <img
-          src="https://via.placeholder.com/80"
-          alt="Agente"
-          className="rounded-circle mb-2"
-        />
-        <h5>{agentName || "Agente"}</h5>
-      </div>
+    <>
+      {/* Botón hamburguesa SOLO en móvil */}
+      <button
+        className="btn btn-primary d-md-none sidebar-hamburger"
+        onClick={() => setShow(true)}
+        aria-label="Abrir menú"
+      >
+        <FaBars />
+      </button>
 
-      <NavLink to="/agent-dashboard" className={({ isActive }) => isActive ? "sidebar-link active" : "sidebar-link"}>
-        🏠 Dashboard
-      </NavLink>
-      <NavLink to="/appointment-menu" className={({ isActive }) => isActive ? "sidebar-link active" : "sidebar-link"}>
-        📅 Citas
-      </NavLink>
-      <NavLink to="/patient-menu" className={({ isActive }) => isActive ? "sidebar-link active" : "sidebar-link"}>
-        👤 Pacientes
-      </NavLink>
-      {/* Agrega aquí más links para el agente si es necesario */}
+      {/* Sidebar fijo en escritorio */}
+      <aside className="sidebar d-none d-md-flex flex-column">
+        {userBlock}
+        <SidebarLinks onNav={handleNav} />
+      </aside>
 
-      <hr className="text-white" />
-
-      <a href="#" onClick={handleLogout} className="sidebar-link text-danger">
-        🚪 Cerrar sesión
-      </a>
-
-      <style jsx>{`
-        .sidebar {
-          width: 300px;
-          height: 100vh;
-          background-color: #2c3e50;
-          color: white;
-          padding: 1rem;
-          display: flex;
-          flex-direction: column;
-        }
-
-        .sidebar-link {
-          color: white;
-          text-decoration: none;
-          display: block;
-          margin: 0.5rem 0;
-          padding: 0.5rem;
-          border-radius: 0.25rem;
-        }
-
-        .sidebar-link.active {
-          background-color: #117a8b;
-          font-weight: bold;
-        }
-
-        .sidebar-link.text-danger {
-          color: #e74c3c;
-        }
-      `}</style>
-    </nav>
+      {/* Sidebar offcanvas en móvil */}
+      {show && (
+        <div className="offcanvas-sidebar" onClick={() => setShow(false)}>
+          <div className="sidebar" onClick={e => e.stopPropagation()}>
+            <button
+              className="btn btn-outline-light mb-3 d-md-none"
+              onClick={() => setShow(false)}
+            >
+              Cerrar
+            </button>
+            {userBlock}
+            <SidebarLinks onNav={handleNav} />
+          </div>
+        </div>
+      )}
+    </>
   );
 }

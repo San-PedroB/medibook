@@ -1,10 +1,17 @@
-// src/components/layout/AdminSidebar.jsx
-import React from "react";
+import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
+import { FaHome, FaUsers, FaUserMd, FaStethoscope, FaCalendarAlt, FaSignOutAlt, FaBars } from "react-icons/fa";
 import { logoutUser } from "../../services/userService";
+import { useAuth } from "../../context/AuthContext";
+import "./StyleSidebar.css";
 
 export default function AdminSidebar() {
+  const [show, setShow] = useState(false);
   const navigate = useNavigate();
+  const { user } = useAuth();
+
+  const adminName = user ? `${user.firstName || ""} ${user.lastNameP || ""}`.trim() : "Administrador";
+
 
   const handleLogout = async (e) => {
     e.preventDefault();
@@ -12,71 +19,77 @@ export default function AdminSidebar() {
     navigate("/login");
   };
 
-  return (
-    <nav className="sidebar">
-      <div className="text-center mb-4">
-        <img
-          src="https://via.placeholder.com/80"
-          alt="Administrador"
-          className="rounded-circle mb-2"
-        />
-        <h5>Administrador</h5>
-      </div>
-
-      <NavLink to="/admin-dashboard" className={({ isActive }) => isActive ? "sidebar-link active" : "sidebar-link"}>
-        🏠 Dashboard
-      </NavLink>
-      <NavLink to="/doctor-menu" className={({ isActive }) => isActive ? "sidebar-link active" : "sidebar-link"}>
-        👨‍⚕️ Médicos
-      </NavLink>
-      <NavLink to="/agent-menu" className={({ isActive }) => isActive ? "sidebar-link active" : "sidebar-link"}>
-        🧑‍💼 Agentes
-      </NavLink>
-      <NavLink to="/manage-specialties" className={({ isActive }) => isActive ? "sidebar-link active" : "sidebar-link"}>
-        🧬 Especialidades
-      </NavLink>
-      <NavLink to="/appointments-calendar" className={({ isActive }) => isActive ? "sidebar-link active" : "sidebar-link"}>
-        📅 Citas
-      </NavLink>
-      <NavLink to="/settings" className={({ isActive }) => isActive ? "sidebar-link active" : "sidebar-link"}>
-        ⚙️ Configuración
-      </NavLink>
-
+  const userBlock = (
+    <div className="text-center mb-4 mt-4">
+      <h5 style={{ wordBreak: "break-word" }}>
+        {adminName || "Administrador"} 
+      </h5>
+      <small className="text-info d-block">Administrador</small>
       <hr className="text-white" />
+    </div>
+  );
 
-      <a href="#" onClick={handleLogout} className="sidebar-link text-danger">
-        🚪 Cerrar sesión
-      </a>
+  // Links con rutas y nuevos íconos FontAwesome
+  function SidebarLinks({ onNav }) {
+    return (
+      <>
+        <NavLink to="/admin-dashboard" className={({ isActive }) => isActive ? "sidebar-link active" : "sidebar-link"} onClick={onNav}>
+          <FaHome className="me-2" /> Dashboard
+        </NavLink>
+        <NavLink to="/agent-menu" className={({ isActive }) => isActive ? "sidebar-link active" : "sidebar-link"} onClick={onNav}>
+          <FaUsers className="me-2" /> Agentes
+        </NavLink>
+        <NavLink to="/doctor-menu" className={({ isActive }) => isActive ? "sidebar-link active" : "sidebar-link"} onClick={onNav}>
+          <FaUserMd className="me-2" /> Médicos
+        </NavLink>
+        <NavLink to="/manage-specialties" className={({ isActive }) => isActive ? "sidebar-link active" : "sidebar-link"} onClick={onNav}>
+          <FaStethoscope className="me-2" /> Especialidades
+        </NavLink>
+        <NavLink to="/appointments-calendar" className={({ isActive }) => isActive ? "sidebar-link active" : "sidebar-link"} onClick={onNav}>
+          <FaCalendarAlt className="me-2" /> Citas
+        </NavLink>
+        <hr className="text-white" />
+        <a href="#" onClick={handleLogout} className="sidebar-link text-danger">
+          <FaSignOutAlt className="me-2" /> Cerrar sesión
+        </a>
+      </>
+    );
+  }
 
-      <style jsx>{`
-        .sidebar {
-          width: 300px;
-          height: 100vh;
-          background-color: #2c3e50;
-          color: white;
-          padding: 1rem;
-          display: flex;
-          flex-direction: column;
-        }
+  const handleNav = () => setShow(false);
 
-        .sidebar-link {
-          color: white;
-          text-decoration: none;
-          display: block;
-          margin: 0.5rem 0;
-          padding: 0.5rem;
-          border-radius: 0.25rem;
-        }
+  return (
+    <>
+      {/* Hamburguesa en móvil */}
+      <button
+        className="btn btn-primary d-md-none sidebar-hamburger"
+        onClick={() => setShow(true)}
+        aria-label="Abrir menú"
+      >
+        <FaBars />
+      </button>
 
-        .sidebar-link.active {
-          background-color: #117a8b;
-          font-weight: bold;
-        }
+      {/* Sidebar fijo en escritorio */}
+      <aside className="sidebar d-none d-md-flex flex-column">
+        {userBlock}
+        <SidebarLinks onNav={handleNav} />
+      </aside>
 
-        .sidebar-link.text-danger {
-          color: #e74c3c;
-        }
-      `}</style>
-    </nav>
+      {/* Sidebar offcanvas en móvil */}
+      {show && (
+        <div className="offcanvas-sidebar" onClick={() => setShow(false)}>
+          <div className="sidebar" onClick={e => e.stopPropagation()}>
+            <button
+              className="btn btn-outline-light mb-3 d-md-none"
+              onClick={() => setShow(false)}
+            >
+              Cerrar
+            </button>
+            {userBlock}
+            <SidebarLinks onNav={handleNav} />
+          </div>
+        </div>
+      )}
+    </>
   );
 }

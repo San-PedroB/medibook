@@ -55,46 +55,31 @@ async function createCompany({
   return companyId;
 }
 
-/**
- * Crea un documento de admin en la subcolección de la empresa
- */
-async function createCompanyAdmin({ firstName, lastNameP, lastNameM, rutAdmin, phoneAdmin }, companyId, uid) {
-  await setDoc(doc(db, "companies", companyId, "admins", uid), {
-    firstName,
-    lastNameP,
-    lastNameM,
-    rut: rutAdmin,
-    phone: phoneAdmin,
-    companyId,
-    createdAt: serverTimestamp()
-  });
-}
 
+// ...
 /**
- * Crea perfil de usuario en "users" para metadata de la cuenta
+ * Crea perfil de usuario en "users" para metadata de la cuenta (admin)
  */
-async function createUserProfile(uid, { email, acceptTerms }, companyId, companyName) {
+async function createUserProfile(uid, { email, firstName, lastNameP, lastNameM, rutAdmin, phoneAdmin }, companyId, companyName) {
   await setDoc(doc(db, "users", uid), {
     email,
     role: "admin",
-    acceptTerms,
     companyId,
     companyName,
+    firstName,     
+    lastNameP,     
+    lastNameM,      
+    rut: rutAdmin,
+    phone: phoneAdmin,
     createdAt: serverTimestamp()
   });
 }
 
-/**
- * Registra un nuevo administrador y su empresa utilizando pasos separados:
- * 1. Crear usuario en Auth.
- * 2. Crear documento de empresa.
- * 3. Crear documento de admin en subcolección.
- * 4. Crear perfil de usuario en "users".
- */
+
 export async function registerAdminWithCompany({ admin, company, account }) {
   const { firstName, lastNameP, lastNameM, rutAdmin, phoneAdmin } = admin;
   const { name, businessName, rutCompany, industry, phoneCompany, street, number, office, city, website } = company;
-  const { email, password, acceptTerms } = account;
+  const { email, password } = account;
 
   // 1. Auth
   const uid = await createAuthUser(email, password);
@@ -105,18 +90,34 @@ export async function registerAdminWithCompany({ admin, company, account }) {
     uid
   );
 
-  // 3. Admin
-  await createCompanyAdmin(
-    { firstName, lastNameP, lastNameM, rutAdmin, phoneAdmin },
+  // 3. Perfil de usuario (aquí queda TODO el admin, ya no hay subcolección)
+  await createUserProfile(
+    uid,
+    {
+      email,
+      firstName,
+      lastNameP,
+      lastNameM,
+      rutAdmin,
+      phoneAdmin
+    },
     companyId,
-    uid
+    name
   );
-
-  // 4. Perfil de usuario
-  await createUserProfile(uid, { email, acceptTerms }, companyId, name);
 
   return { uid, companyId };
 }
+
+export async function getAdminsByCompanyId(companyId) {
+  const q = query(
+    collection(db, "users"),
+    where("role", "==", "admin"),
+    where("companyId", "==", companyId)
+  );
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+}
+
 
 /**
  * Registra un nuevo agente usando Cloud Function protegida

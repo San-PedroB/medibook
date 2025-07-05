@@ -1,7 +1,8 @@
-// src/components/appointments/CreateAppointmentForm.jsx
 import React, { useState, useEffect } from "react";
 import TextInput from "../formElements/TextInput";
 import SubmitButton from "../formElements/SubmitButton";
+import AutocompleteInput from "../formElements/AutocompleteInput";
+import DateTimePicker from "../formElements/DateTimePicker";
 import { createAppointment } from "../../services/appointmentService";
 import { getPatientsByCompany } from "../../services/patientService";
 import { getDoctorsByCompanyId } from "../../services/doctorService";
@@ -16,20 +17,22 @@ export default function CreateAppointmentForm({
   const { user } = useAuth();
   const [patients, setPatients] = useState([]);
   const [doctors, setDoctors] = useState([]);
+  const [selectedPatient, setSelectedPatient] = useState(null);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
 
+  // Maneja las fechas como objetos Date
   const [form, setForm] = useState({
     patientId: "",
     patientName: "",
     doctorId: "",
     doctorName: "",
-    start: initialDate ? initialDate + "T09:00" : "",
-    end: initialDate ? initialDate + "T09:30" : "",
+    start: initialDate ? new Date(initialDate + "T09:00") : new Date(),
+    end: initialDate ? new Date(initialDate + "T09:30") : new Date(),
     notes: "",
     status: "vigente",
   });
 
-  const [errorMessage, setErrorMessage] = useState(""); // Mensaje de error por solapamiento
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     async function fetchData() {
@@ -46,24 +49,27 @@ export default function CreateAppointmentForm({
     if (initialDate) {
       setForm((f) => ({
         ...f,
-        start: initialDate + "T09:00",
-        end: initialDate + "T09:30",
+        start: new Date(initialDate + "T09:00"),
+        end: new Date(initialDate + "T09:30"),
       }));
     }
   }, [initialDate]);
 
-  // 🔹 Handlers para select
-  const handlePatientChange = (e) => {
-    const selectedId = e.target.value;
-    const selectedPatient = patients.find((p) => p.id === selectedId);
-    setForm((f) => ({
-      ...f,
-      patientId: selectedId,
-      patientName: selectedPatient
-        ? `${selectedPatient.firstName} ${selectedPatient.lastNameP} ${selectedPatient.lastNameM}`
-        : "",
-    }));
-  };
+  useEffect(() => {
+    if (selectedPatient) {
+      setForm((f) => ({
+        ...f,
+        patientId: selectedPatient.id,
+        patientName: `${selectedPatient.firstName} ${selectedPatient.lastNameP} ${selectedPatient.lastNameM}`,
+      }));
+    } else {
+      setForm((f) => ({
+        ...f,
+        patientId: "",
+        patientName: "",
+      }));
+    }
+  }, [selectedPatient]);
 
   const handleDoctorChange = (e) => {
     const selectedId = e.target.value;
@@ -75,10 +81,9 @@ export default function CreateAppointmentForm({
         ? `${doctor.firstName} ${doctor.paternalLastName} ${doctor.maternalLastName}`
         : "",
     }));
-    setSelectedDoctor(doctor || null); // ACTUALIZA el doctor seleccionado para mostrar especialidad
+    setSelectedDoctor(doctor || null);
   };
 
-  // 🔹 Handler para campos básicos
   const handleChange = (name, value) => {
     setForm((f) => ({
       ...f,
@@ -86,38 +91,23 @@ export default function CreateAppointmentForm({
     }));
   };
 
-  // --- FUNCION DE SOLAPAMIENTO ---
   function doIntervalsOverlap(startA, endA, startB, endB) {
     return startA < endB && endA > startB;
   }
 
-  // 🔹 Guardar cita
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrorMessage(""); // Limpiar mensaje anterior
+    setErrorMessage("");
 
-    // Validar solapamiento antes de crear la cita
-    const startB = new Date(form.start);
-    const endB = new Date(form.end);
+    // Valida solapamiento antes de crear la cita
+    const startB = form.start;
+    const endB = form.end;
 
-    // Debug: muestra las citas para el doctor seleccionado
-    const eventosDoctor = events.filter(ev => ev.doctorId === form.doctorId);
-    console.log("Citas del doctor:", eventosDoctor);
-
-    const isDoctorBusy = events.some(ev => {
-      // Status: ocupado si NO está cancelada
+    const isDoctorBusy = events.some((ev) => {
       const status = (ev.status || "").toLowerCase();
       const ocupado = status !== "cancelada";
       const startA = new Date(ev.start);
       const endA = new Date(ev.end);
-
-      // Debug:
-      console.log(
-        `[CHECK] Doctor: ${ev.doctorId}, Status: ${status}, StartA: ${startA}, EndA: ${endA}`,
-        "vs",
-        `StartB: ${startB}, EndB: ${endB}, Ocupado: ${ocupado}`
-      );
-
       return (
         ev.doctorId === form.doctorId &&
         ocupado &&
@@ -130,7 +120,7 @@ export default function CreateAppointmentForm({
       return;
     }
 
-    // Crear la cita si no hay solapamiento
+    // Guarda las fechas como objeto Date (el servicio las convierte a Timestamp)
     await createAppointment({
       ...form,
       companyId: user.companyId,
@@ -140,7 +130,6 @@ export default function CreateAppointmentForm({
 
   return (
     <form onSubmit={handleSubmit}>
-      {/* Mensaje de error */}
       {errorMessage && (
         <div className="alert alert-danger text-center">{errorMessage}</div>
       )}
@@ -148,19 +137,16 @@ export default function CreateAppointmentForm({
       {/* Paciente */}
       <div className="mb-2">
         <label>Paciente</label>
-        <select
-          className="form-control"
-          value={form.patientId}
-          onChange={handlePatientChange}
+        <AutocompleteInput
+          options={patients}
+          getOptionLabel={(p) =>
+            `${p.firstName} ${p.lastNameP} ${p.lastNameM}`
+          }
+          value={selectedPatient}
+          setValue={setSelectedPatient}
+          placeholder="Buscar paciente..."
           required
-        >
-          <option value="">Selecciona un paciente</option>
-          {patients.map((p) => (
-            <option key={p.id} value={p.id}>
-              {p.firstName} {p.lastNameP} {p.lastNameM}
-            </option>
-          ))}
-        </select>
+        />
       </div>
 
       {/* Doctor */}
@@ -181,7 +167,7 @@ export default function CreateAppointmentForm({
         </select>
       </div>
 
-      {/* Especialidad solo si hay doctor seleccionado */}
+      {/* Especialidad */}
       {selectedDoctor && (
         <div className="mb-2">
           <strong>Especialidad:</strong>{" "}
@@ -191,27 +177,25 @@ export default function CreateAppointmentForm({
         </div>
       )}
 
-      {/* Fechas */}
+      {/* Fecha y hora */}
       <div className="row">
         <div className="col">
-          <label>Inicio</label>
-          <input
-            type="datetime-local"
-            className="form-control"
+          <DateTimePicker
+            label="Inicio"
             value={form.start}
-            onChange={(e) => handleChange("start", e.target.value)}
+            onChange={date => setForm(f => ({ ...f, start: date }))}
             required
+            showTime={true}
           />
         </div>
         <div className="col">
-          <label>Término</label>
-          <input
-            type="datetime-local"
-            className="form-control"
-            value={form.end}
-            onChange={(e) => handleChange("end", e.target.value)}
-            required
-          />
+        <DateTimePicker
+          label="Termino"
+          value={form.end}
+          onChange={date => setForm(f => ({ ...f, end: date }))}
+          required
+          showTime={true}
+        />
         </div>
       </div>
 
@@ -221,7 +205,6 @@ export default function CreateAppointmentForm({
         onChange={(e) => handleChange("notes", e.target.value)}
       />
 
-      {/* Estado */}
       <div className="mt-2">
         <label>Estado de la cita</label>
         <select
@@ -237,7 +220,11 @@ export default function CreateAppointmentForm({
 
       <div className="d-flex justify-content-end mt-3">
         <SubmitButton text="Crear Cita" />
-        <button type="button" className="btn btn-secondary ms-2" onClick={onCancel}>
+        <button
+          type="button"
+          className="btn btn-secondary ms-2"
+          onClick={onCancel}
+        >
           Cancelar
         </button>
       </div>

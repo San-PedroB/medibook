@@ -5,13 +5,13 @@ import NameInput from "../formElements/NameInput";
 import RutInput from "../formElements/RutInput";
 import PhoneInput from "../formElements/PhoneInput";
 import EmailInput from "../formElements/EmailInput";
-import DateInput from "../formElements/DateInput";
 import PrevisionTypeSelect from "../formElements/PrevisionTypeSelect";
 import GenderSelect from "../formElements/GenderSelect";
 import SubmitButton from "../formElements/SubmitButton";
 import ErrorMessage from "../formElements/ErrorMessage";
 import CountrySelect from "../formElements/CountrySelect";
 import TextInput from "../formElements/TextInput";
+import DateTimePicker from "../formElements/DateTimePicker";
 
 import useFormField from "../../hooks/useFormField";
 import { validateFields } from "../../utils/formUtils";
@@ -94,6 +94,7 @@ export default function PatientForm({
     const errors = validatePatientForm(formValues);
     setFieldErrors(errors);
     if (Object.keys(errors).length > 0) return;
+    
 
     onSubmit(formValues);
   };
@@ -174,13 +175,18 @@ export default function PatientForm({
 
       <Row className="mb-3">
         <Col md={4}>
-          <DateInput
-            {...birthDate}
-            label="Fecha de Nacimiento"
-            hasSubmitted={hasSubmitted}
-            isInvalid={!!fieldErrors.birthDate}
-            errorMessage={fieldErrors.birthDate}
+          <DateTimePicker
+            label="Fecha de nacimiento"
+            value={birthDate.value}
+            onChange={birthDate.setValue}
+            required
+            showTime={false}
+            showYearDropdown
+            scrollableYearDropdown
+            minDate={new Date(1930, 0, 1)}
+            maxDate={new Date()}           
           />
+
         </Col>
         <Col md={4}>
           <PrevisionTypeSelect

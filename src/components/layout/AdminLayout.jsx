@@ -10,14 +10,13 @@ export default function AdminLayout({ children }) {
     <div className="d-flex min-vh-100">
       <AdminSidebar />
 
-      <div className="d-flex flex-column flex-grow-1">
+      <div className="d-flex flex-column flex-grow-1" style={{ minHeight: "100vh" }}>
         <Navbar />
         <AnimatedBackground />
 
-        <div className="flex-grow-1 d-flex flex-column">
-          <main className="flex-grow-1 p-4">{children}</main>
-          <Footer />
-        </div>
+        {/* Esto es lo importante: main crece, footer siempre al fondo */}
+        <main className="flex-grow-1 d-flex flex-column">{children}</main>
+        <Footer />
       </div>
     </div>
   );

@@ -150,7 +150,6 @@ export default function RegisterAdminCompanyForm() {
       account: {
         email: email.value,
         password: password.value,
-        acceptTerms: true
       }
     });
   };

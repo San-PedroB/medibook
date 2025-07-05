@@ -1,18 +1,19 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { loginUser, getCurrentUserData } from "../../services/userService";
-
 
 // Microcomponentes
 import EmailInput from "../../components/formElements/EmailInput";
 import PasswordInput from "../../components/formElements/PasswordInput";
 import AuthForm from "../../components/auth/AuthForm";
 
-
 // Utils
 import useFormField from "../../hooks/useFormField";
 import { validateFields } from "../../utils/formUtils";
 import { triggerAnimation } from "../../utils/animationUtils";
+
+// 👇 IMPORTA EL CONTEXTO DE AUTH
+import { useAuth } from "../../context/AuthContext";
 
 function Login() {
   const emailField = useFormField();
@@ -22,6 +23,22 @@ function Login() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const errorRef = useRef(null);
   const navigate = useNavigate();
+
+  // 👇 OBTIENE EL USUARIO DEL CONTEXTO
+  const { user } = useAuth();
+
+  // 👇 REDIRIGE SI YA ESTÁ LOGUEADO
+  useEffect(() => {
+    if (user) {
+      if (user.role === "admin") {
+        navigate("/admin-dashboard");
+      } else if (user.role === "agent") {
+        navigate("/agent-dashboard");
+      } else {
+        navigate("/");
+      }
+    }
+  }, [user, navigate]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
