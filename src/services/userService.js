@@ -1,4 +1,3 @@
-
 // src/services/userService.js
 import { auth, db } from "../firebase/firebaseConfig";
 import {
@@ -56,7 +55,6 @@ async function createCompany({
 }
 
 
-// ...
 /**
  * Crea perfil de usuario en "users" para metadata de la cuenta (admin)
  */
@@ -81,29 +79,51 @@ export async function registerAdminWithCompany({ admin, company, account }) {
   const { name, businessName, rutCompany, industry, phoneCompany, street, number, office, city, website } = company;
   const { email, password } = account;
 
-  // 1. Auth
-  const uid = await createAuthUser(email, password);
+  // 1. Crear usuario en Auth
+  let userCredential;
+  try {
+    userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    console.log("Usuario creado en Auth:", userCredential.user.uid);
+  } catch (e) {
+    console.error("Error creando usuario en Auth:", e);
+    throw e;
+  }
+  const uid = userCredential.user.uid;
 
-  // 2. Empresa
-  const companyId = await createCompany(
-    { name, businessName, rutCompany, industry, phoneCompany, street, number, office, city, website },
-    uid
-  );
+  // 2. Crear empresa
+  let companyId;
+  try {
+    companyId = await createCompany(
+      { name, businessName, rutCompany, industry, phoneCompany, street, number, office, city, website },
+      uid
+    );
+    console.log("Empresa creada:", companyId);
+  } catch (e) {
+    console.error("Error creando empresa:", e);
+    throw e;
+  }
 
-  // 3. Perfil de usuario (aquí queda TODO el admin, ya no hay subcolección)
-  await createUserProfile(
-    uid,
-    {
-      email,
-      firstName,
-      lastNameP,
-      lastNameM,
-      rutAdmin,
-      phoneAdmin
-    },
-    companyId,
-    name
-  );
+  // 3. Crear perfil de usuario en Firestore
+  try {
+    console.log("Usuario autenticado antes de crear perfil:", auth.currentUser);
+    await createUserProfile(
+      uid,
+      {
+        email,
+        firstName,
+        lastNameP,
+        lastNameM,
+        rutAdmin,
+        phoneAdmin
+      },
+      companyId,
+      name
+    );
+    console.log("Perfil de usuario creado en Firestore");
+  } catch (e) {
+    console.error("Error creando perfil de usuario en Firestore:", e);
+    throw e;
+  }
 
   return { uid, companyId };
 }
